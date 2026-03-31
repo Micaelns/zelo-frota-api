@@ -6,6 +6,6 @@ public class VehicleTypeMock
 {
     public static VehicleType Carreta()
     {
-        return new(1, "Cavalinho");
+        return new("Cavalinho");
     }
 }

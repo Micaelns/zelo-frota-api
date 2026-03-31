@@ -1,7 +1,6 @@
 using Domain.Entities;
 using Domain.ObjectValues;
 using DomainTests.Mocks;
-using Newtonsoft.Json.Linq;
 
 namespace DomainTests.Entity;
 
@@ -10,14 +9,12 @@ public class VehicleTest
     [Fact]
     public void Vehicle_withCorrectParams_ReturnValidVehicle()
     {
-        var id = 1;
-        var type = new VehicleType(1,"Cavalinho Scanna");
+        var type = new VehicleType("Cavalinho Scanna");
         var plate = new Plate("ASD-1W56");
 
-        var vehicle = new Vehicle(id, type, plate, 0, []);
+        var vehicle = new Vehicle(type, plate, 0, []);
 
         Assert.NotNull(vehicle);
-        Assert.Equal(id, vehicle.Id);
         Assert.Equal(type, vehicle.Type);
         Assert.Equal(plate.Value, vehicle.Plate);
     }
