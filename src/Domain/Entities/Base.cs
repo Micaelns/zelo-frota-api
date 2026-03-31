@@ -1,8 +1,8 @@
 ﻿namespace Domain.Entities;
 
-public class Base(int id)
+public class Base()
 {
-    public int Id { get; set; } = id;
+    public int Id { get; set; } = 0;
     public DateTime Created { get; set; } = DateTime.Now;
     public DateTime? Deleted { get; set; } = null;
- }
+}

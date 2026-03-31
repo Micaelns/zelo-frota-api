@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities;
 
-public class VehicleType(int id, string name):Base(id)
+public class VehicleType(string name) : Base()
 {
     public string Name { get; set; } = name;
 }
