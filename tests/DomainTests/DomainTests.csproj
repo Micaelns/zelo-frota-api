@@ -17,11 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\zelo-frota-api\Domain\Domain.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>
