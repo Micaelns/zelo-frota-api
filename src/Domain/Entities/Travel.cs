@@ -17,11 +17,16 @@ public class Travel(Vehicle vehicle,
         Start = whenTravel??DateTime.Now;
     }
 
-    public void Ends(int finishMileage, DateTime? whenArrived)
+    public void Ends(int finishMileage, float fuelQTD, DateTime? whenArrived)
     {
         if ( finishMileage < 0)
         {
             throw new ArgumentException("Quilometragem informada é inválida");
+        }
+
+        if (fuelQTD < 0)
+        {
+            throw new ArgumentException("A quantidade de combustível informada é inválida");
         }
 
         if (StartedMileage < 0 )
@@ -35,7 +40,8 @@ public class Travel(Vehicle vehicle,
         }
 
         FinishedMileage = finishMileage;
-        Autonomy = (FinishedMileage - StartedMileage) / FinishedMileage;
         End = whenArrived ?? DateTime.Now;
+        var distance = FinishedMileage - StartedMileage;
+        Autonomy = distance / fuelQTD;
     }
 }
