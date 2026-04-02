@@ -2,7 +2,7 @@
 
 public class Base()
 {
-    public int Id { get; set; } = 0;
+    public Guid Id { get; set; }
     public DateTime Created { get; set; } = DateTime.Now;
     public DateTime? Deleted { get; set; } = null;
 }

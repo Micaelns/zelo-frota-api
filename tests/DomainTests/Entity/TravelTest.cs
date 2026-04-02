@@ -8,10 +8,11 @@ public class TravelTest
     public void Starts_WithoutParams_SetStartNow()
     {
         var travel= TravelMock.ValidTravel();
+        var currentMileage = 2000;
 
-        travel.Starts(null);
+        travel.Starts(currentMileage, null);
 
-        Assert.Equal(travel.Vehicle.Mileage, travel.StartedMileage);
+        Assert.Equal(currentMileage, travel.StartedMileage);
         Assert.NotNull(travel.Start);
     }
 
@@ -20,11 +21,27 @@ public class TravelTest
     {
         var travel = TravelMock.ValidTravel();
         var tomorrow = DateTime.Now.AddDays(1);
+        var currentMileage = 2000;
 
-        travel.Starts(tomorrow);
+        travel.Starts(currentMileage, tomorrow);
 
-        Assert.Equal(travel.Vehicle.Mileage, travel.StartedMileage);
+        Assert.Equal(currentMileage, travel.StartedMileage);
         Assert.Equal(tomorrow, travel.Start);
+    }
+
+    [Fact]
+    public void Starts_WithValidParamTwice_ReturnException()
+    {
+        var travel = TravelMock.ValidTravel();
+        var tomorrow = DateTime.Now.AddDays(1);
+        var currentMileage = 2000;
+
+        travel.Starts(currentMileage, tomorrow);
+
+        var excecao = Assert.Throws<InvalidOperationException>(() => travel.Starts(currentMileage, tomorrow));
+
+        Assert.Equal("Viagem já iniciada", excecao.Message);
+
     }
 
     [Fact]
@@ -34,11 +51,12 @@ public class TravelTest
         var travel = TravelMock.ValidTravel();
         var expectTraveled = 4000;
         var expectAutonomy = expectTraveled / fuelQTD;
-        var endMileage = travel.Vehicle.Mileage + expectTraveled;
+        var currentMileage = 2000;
+        var endMileage = currentMileage + expectTraveled;
         var now = DateTime.Now;
         var tomorrow = DateTime.Now.AddDays(1);
 
-        travel.Starts(now);
+        travel.Starts(currentMileage,now);
         travel.Ends(endMileage, fuelQTD, tomorrow);
 
         Assert.Equal(expectAutonomy, travel.Autonomy);
@@ -48,10 +66,11 @@ public class TravelTest
     public void Ends_WithoutParams_SetEndNow()
     {
         var fuelQTD = 800;
+        var currentMileage = 2000;
         var travel = TravelMock.ValidTravel();
-        var endMileage = travel.Vehicle.Mileage + 4000;
+        var endMileage = currentMileage + 4000;
 
-        travel.Starts(null);
+        travel.Starts(currentMileage, null);
         travel.Ends(endMileage, fuelQTD, null);
 
         Assert.Equal(endMileage, travel.FinishedMileage);
@@ -63,11 +82,12 @@ public class TravelTest
     {
         var fuelQTD = 800;
         var travel = TravelMock.ValidTravel();
-        var endMileage = travel.Vehicle.Mileage + 4000;
+        var currentMileage = 2000;
+        var endMileage = currentMileage + 4000;
         var now = DateTime.Now;
         var tomorrow = DateTime.Now.AddDays(1);
 
-        travel.Starts(now);
+        travel.Starts(currentMileage, now);
         travel.Ends(endMileage, fuelQTD, tomorrow);
 
         Assert.Equal(endMileage, travel.FinishedMileage);
@@ -78,9 +98,10 @@ public class TravelTest
     public void Ends_WithInvalidFinishMileage_returnException()
     {
         var fuelQTD = 800;
+        var currentMileage = 2000;
         var travel = TravelMock.ValidTravel();
 
-        travel.Starts(null);
+        travel.Starts(currentMileage,null);
         var excecao = Assert.Throws<ArgumentException>(() => travel.Ends(-1, fuelQTD, null));
 
         Assert.Equal("Quilometragem informada é inválida", excecao.Message);
@@ -92,7 +113,7 @@ public class TravelTest
         var fuelQTD = 800;
         var travel = TravelMock.ValidTravel();
 
-        var excecao = Assert.Throws<ArgumentException>(() => travel.Ends(2, fuelQTD, null));
+        var excecao = Assert.Throws<InvalidOperationException>(() => travel.Ends(2, fuelQTD, null));
 
         Assert.Equal("A viagem não foi iniciada", excecao.Message);
     }
@@ -101,12 +122,13 @@ public class TravelTest
     public void Ends_WithEndsBeforeStarts_SetCorrectEnd()
     {
         var fuelQTD = 800;
+        var currentMileage = 2000;
         var travel = TravelMock.ValidTravel();
-        var endMileage = travel.Vehicle.Mileage - 500;
+        var endMileage = currentMileage - 500;
         var now = DateTime.Now;
         var tomorrow = DateTime.Now.AddDays(1);
 
-        travel.Starts(tomorrow);
+        travel.Starts(currentMileage, tomorrow);
         var excecao = Assert.Throws<ArgumentException>(() => travel.Ends(endMileage, fuelQTD, now));
 
         Assert.Equal("A viagem não pode finalizar antes de iniciar", excecao.Message);
