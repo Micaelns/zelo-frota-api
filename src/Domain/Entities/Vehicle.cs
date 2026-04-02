@@ -2,10 +2,10 @@
 
 namespace Domain.Entities;
 
-public class Vehicle(VehicleType type, Plate plate,
+public class Vehicle(Guid vehicleTypeId, Plate plate,
                 int mileage, List<Travel> travels) : Base()
 {
-    public VehicleType Type { get; set; } = type;
+    public Guid VehicleTypeId { get; set; } = vehicleTypeId;
     public string Plate { get; set; } = plate.Value;
     public int Mileage { get; private set; } = mileage > 0 ? mileage : 0;
     public List<Travel> Travels { get; set; } = travels;

@@ -9,13 +9,13 @@ public class VehicleTest
     [Fact]
     public void Vehicle_withCorrectParams_ReturnValidVehicle()
     {
-        var type = new VehicleType("Cavalinho Scanna");
+        var type = Guid.NewGuid();
         var plate = new Plate("ASD-1W56");
 
         var vehicle = new Vehicle(type, plate, 0, []);
 
         Assert.NotNull(vehicle);
-        Assert.Equal(type, vehicle.Type);
+        Assert.Equal(type, vehicle.VehicleTypeId);
         Assert.Equal(plate.Value, vehicle.Plate);
     }
 

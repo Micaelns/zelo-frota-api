@@ -6,7 +6,6 @@ public class TravelMock
 {
     public static Travel ValidTravel()
     {
-        return new(Guid.NewGuid(),
-                    DestinationMock.ValidDestination());
+        return new(Guid.NewGuid(), Guid.NewGuid());
     }
 }

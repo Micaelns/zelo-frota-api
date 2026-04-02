@@ -1,10 +1,10 @@
 ﻿namespace Domain.Entities;
 
 public class Travel(Guid vehicleId,
-                    Destination destination) : Base()
+                    Guid destinationId) : Base()
 {
     public Guid VehicleId { get; private set; } = vehicleId;
-    public Destination Destination { get; set; } = destination;
+    public Guid Destination { get; set; } = destinationId;
     public int? StartedMileage { get; private set; }
     public int? FinishedMileage { get; private set; }
     public float? Autonomy { get; private set; }
