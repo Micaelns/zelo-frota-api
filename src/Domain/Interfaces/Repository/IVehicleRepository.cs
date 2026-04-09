@@ -3,7 +3,7 @@ using Domain.ObjectValues;
 
 namespace Domain.Interfaces.Repository;
 
-public interface IVehicleRepository: IBaseRepository<Vehicle>
+public interface IVehicleRepository : IBaseRepository<Vehicle>
 {
-    public Task<Vehicle?> GetByPlate(Plate plate);
+    public Task<Vehicle?> GetByPlateAsync(string plate);
 }

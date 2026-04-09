@@ -2,13 +2,23 @@
 
 namespace Domain.Entities;
 
-public class Vehicle(Guid vehicleTypeId, Plate plate,
-                int mileage, List<Travel> travels) : Base()
+public class Vehicle : Base
 {
-    public Guid VehicleTypeId { get; set; } = vehicleTypeId;
-    public string Plate { get; set; } = plate.Value;
-    public int Mileage { get; private set; } = mileage > 0 ? mileage : 0;
-    public List<Travel> Travels { get; set; } = travels;
+    protected Vehicle() {
+        Plate = string.Empty;
+    }
+
+    public Vehicle(Guid vehicleTypeId, Plate plate, int mileage)
+    {
+        VehicleTypeId = vehicleTypeId;
+        Plate = plate.Value;
+        Mileage = mileage > 0 ? mileage : 0;
+    }
+    public Guid VehicleTypeId { get; set; }
+    public string Plate { get; set; }
+    public int Mileage { get; private set; }
+    private readonly List<Travel> _travels = [];
+    public IReadOnlyCollection<Travel> Travels => _travels;
 
     public void NewMileage(int mileage)
     {

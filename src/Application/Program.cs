@@ -4,7 +4,7 @@ using Domain.ObjectValues;
 
 var plate = new Plate("ASD-1W56");
 
-var vehicle = new Vehicle(Guid.NewGuid(), plate, 0, []);
+var vehicle = new Vehicle(Guid.NewGuid(), plate, 0);
 
 
 Console.WriteLine($"Hello, World! {vehicle.Plate} {vehicle.Mileage}", vehicle);

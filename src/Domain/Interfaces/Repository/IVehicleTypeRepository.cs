@@ -2,6 +2,6 @@
 
 namespace Domain.Interfaces.Repository;
 
-public interface IDestinationRepository : IBaseRepository<Destination>
+public interface IVehicleTypeRepository : IBaseRepository<VehicleType>
 {
 }

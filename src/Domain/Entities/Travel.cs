@@ -1,10 +1,16 @@
 ﻿namespace Domain.Entities;
 
-public class Travel(Guid vehicleId,
-                    Guid destinationId) : Base()
+public class Travel : Base
 {
-    public Guid VehicleId { get; private set; } = vehicleId;
-    public Guid Destination { get; set; } = destinationId;
+    protected Travel() { }
+
+    public Travel(Guid vehicleId,Guid destinationId){
+        VehicleId = vehicleId;
+        DestinationId = destinationId;
+    }
+
+    public Guid VehicleId { get; private set; } 
+    public Guid DestinationId { get; set; }
     public int? StartedMileage { get; private set; }
     public int? FinishedMileage { get; private set; }
     public float? Autonomy { get; private set; }
