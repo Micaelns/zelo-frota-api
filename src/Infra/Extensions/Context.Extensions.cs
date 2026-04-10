@@ -1,7 +1,6 @@
 ﻿using Infra.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Infra.Extensions;
 

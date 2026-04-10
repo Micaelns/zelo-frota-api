@@ -20,10 +20,10 @@ public class CreateVehicleHandler(IVehicleRepository repository, IVehicleTypeRep
             var plate = new Plate(command.Plate);
             var exists = await _repository.GetByPlateAsync(plate.Value);
 
-            if (exists is not null) 
+            if (exists is not null)
                 return Result<Guid>.Failure("Veículo já cadastrado");
 
-            var vehicleType = _vehicleTypeRepository.FindAsync(command.Type);
+            var vehicleType = await _vehicleTypeRepository.FindAsync(command.Type);
 
             if (vehicleType is null)
                 return Result<Guid>.Failure("Tipo de veículo não existe");

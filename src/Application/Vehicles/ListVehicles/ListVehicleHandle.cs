@@ -12,8 +12,15 @@ public class ListVehicleHandle(IVehicleRepository repository) : IRequestHandler<
         ListVehicleQuery command,
         CancellationToken cancellationToken)
     {
-        var vehicleList = await _repository.AllAsync(command.Skip, command.Take);
+        try
+        {
+            var vehicleList = await _repository.AllAsync(command.Skip, command.Take);
 
-        return Result<List<Vehicle>>.Success(vehicleList.ToList());
+            return Result<List<Vehicle>>.Success(vehicleList.ToList());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<Vehicle>>.Failure(ex.Message);
+        }
     }
 }

@@ -1,4 +1,3 @@
-using Infra.Contexts;
 using Infra.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

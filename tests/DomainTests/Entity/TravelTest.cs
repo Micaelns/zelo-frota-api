@@ -1,4 +1,4 @@
-﻿using DomainTests.Mocks;
+﻿using Domain.Entities;
 
 namespace DomainTests.Entity;
 
@@ -7,7 +7,7 @@ public class TravelTest
     [Fact]
     public void Starts_WithoutParams_SetStartNow()
     {
-        var travel= TravelMock.ValidTravel();
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var currentMileage = 2000;
 
         travel.Starts(currentMileage, null);
@@ -19,7 +19,7 @@ public class TravelTest
     [Fact]
     public void Starts_WithValidParam_SetCorrectStart()
     {
-        var travel = TravelMock.ValidTravel();
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var tomorrow = DateTime.Now.AddDays(1);
         var currentMileage = 2000;
 
@@ -32,7 +32,7 @@ public class TravelTest
     [Fact]
     public void Starts_WithValidParamTwice_ReturnException()
     {
-        var travel = TravelMock.ValidTravel();
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var tomorrow = DateTime.Now.AddDays(1);
         var currentMileage = 2000;
 
@@ -47,8 +47,8 @@ public class TravelTest
     [Fact]
     public void Ends_WithValidParam_CalculateCorrectlyAutonomy()
     {
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var fuelQTD = 800;
-        var travel = TravelMock.ValidTravel();
         var expectTraveled = 4000;
         var expectAutonomy = expectTraveled / fuelQTD;
         var currentMileage = 2000;
@@ -65,9 +65,9 @@ public class TravelTest
     [Fact]
     public void Ends_WithoutParams_SetEndNow()
     {
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var fuelQTD = 800;
         var currentMileage = 2000;
-        var travel = TravelMock.ValidTravel();
         var endMileage = currentMileage + 4000;
 
         travel.Starts(currentMileage, null);
@@ -80,8 +80,8 @@ public class TravelTest
     [Fact]
     public void Ends_WithValidParam_SetCorrectEnd()
     {
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var fuelQTD = 800;
-        var travel = TravelMock.ValidTravel();
         var currentMileage = 2000;
         var endMileage = currentMileage + 4000;
         var now = DateTime.Now;
@@ -97,9 +97,9 @@ public class TravelTest
     [Fact]
     public void Ends_WithInvalidFinishMileage_returnException()
     {
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var fuelQTD = 800;
         var currentMileage = 2000;
-        var travel = TravelMock.ValidTravel();
 
         travel.Starts(currentMileage,null);
         var excecao = Assert.Throws<ArgumentException>(() => travel.Ends(-1, fuelQTD, null));
@@ -110,8 +110,8 @@ public class TravelTest
     [Fact]
     public void Ends_WithoutStarts_returnException()
     {
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var fuelQTD = 800;
-        var travel = TravelMock.ValidTravel();
 
         var excecao = Assert.Throws<InvalidOperationException>(() => travel.Ends(2, fuelQTD, null));
 
@@ -121,9 +121,9 @@ public class TravelTest
     [Fact]
     public void Ends_WithEndsBeforeStarts_SetCorrectEnd()
     {
+        var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
         var fuelQTD = 800;
         var currentMileage = 2000;
-        var travel = TravelMock.ValidTravel();
         var endMileage = currentMileage - 500;
         var now = DateTime.Now;
         var tomorrow = DateTime.Now.AddDays(1);

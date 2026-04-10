@@ -9,11 +9,18 @@ public class ListVehicleTypeHandle(IVehicleTypeRepository repository) : IRequest
 {
     private readonly IVehicleTypeRepository _repository = repository;
     public async Task<Result<List<VehicleType>>> Handle(
-        ListVehicleTypeQuery command,
+        ListVehicleTypeQuery query,
         CancellationToken cancellationToken)
     {
-        var vehicleTypeList = await _repository.AllAsync(command.Skip, command.Take);
+        try
+        {
+            var vehicleTypeList = await _repository.AllAsync(query.Skip, query.Take);
 
-        return Result<List<VehicleType>>.Success(vehicleTypeList.ToList());
+            return Result<List<VehicleType>>.Success(vehicleTypeList.ToList());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<VehicleType>>.Failure(ex.Message);
+        }
     }
 }

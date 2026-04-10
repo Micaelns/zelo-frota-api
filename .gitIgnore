@@ -2,3 +2,4 @@
 **/bin/
 **/obj/
 /src/Api/ZeloFrota.db
+/src/Api/Api.csproj.user

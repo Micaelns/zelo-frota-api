@@ -4,7 +4,7 @@ namespace Domain.ObjectValues;
 
 public class ZipCode
 {
-    private const string Pattern = @"^[0-9]{5}-[0-9]{3}$";
+    private const string Pattern = @"^[0-9]{5}-?[0-9]{3}$";
     public string Value { get; set; }
 
     public ZipCode(string value)

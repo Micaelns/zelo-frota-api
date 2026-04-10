@@ -1,6 +1,5 @@
 using Domain.Entities;
 using Domain.ObjectValues;
-using DomainTests.Mocks;
 
 namespace DomainTests.Entity;
 
@@ -12,7 +11,7 @@ public class VehicleTest
         var type = Guid.NewGuid();
         var plate = new Plate("ASD-1W56");
 
-        var vehicle = new Vehicle(type, plate, 0, []);
+        var vehicle = new Vehicle(type, plate, 0);
 
         Assert.NotNull(vehicle);
         Assert.Equal(type, vehicle.VehicleTypeId);
@@ -23,7 +22,7 @@ public class VehicleTest
     public void NewMileage_InsertValidMileage_HaventError()
     {
         var assertNewMiliage = 10001;
-        var vehicle = VehicleMock.ValidVehicle(mileage:10000);
+        var vehicle = new Vehicle(Guid.NewGuid(), new("AAA1A23"), 10000);
 
         vehicle.NewMileage(assertNewMiliage);
 
@@ -32,10 +31,10 @@ public class VehicleTest
 
 
     [Fact]
-    public void NewMileage_InsertInValidMileage_HaveAError()
+    public void NewMileage_InsertInValidMileage_ReturnAArgumentException()
     {
         var assertNewMiliage = 1000;
-        var vehicle = VehicleMock.ValidVehicle(mileage: 10000);
+        var vehicle = new Vehicle(Guid.NewGuid(), new("AAA1A23"), 10000);
 
         var excecao = Assert.Throws<ArgumentException>(() => vehicle.NewMileage(assertNewMiliage));
 

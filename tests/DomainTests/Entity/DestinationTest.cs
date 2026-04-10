@@ -20,7 +20,6 @@ public class DestinationTest
     }
 
     [Theory]
-    [InlineData("48360000", "Acajutiba", "CEP inválido")]
     [InlineData("483600000", "Acajutiba", "CEP inválido")]
     [InlineData("48360 000", "Acajutiba", "CEP inválido")]
     [InlineData("48360-A00", "Acajutiba", "CEP inválido")]
