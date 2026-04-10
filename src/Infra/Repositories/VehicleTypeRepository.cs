@@ -22,6 +22,12 @@ public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRep
         return await _context.VehicleTypes.FindAsync(id);
     }
 
+    public async Task UpdateAsync(VehicleType value)
+    {
+        _context.VehicleTypes.Update(value);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task AddAsync(VehicleType value)
     {
         await _context.VehicleTypes.AddAsync(value);

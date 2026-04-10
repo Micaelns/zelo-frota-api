@@ -27,4 +27,10 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
         await _context.Destinations.AddAsync(value);
         await _context.SaveChangesAsync();
     }
+
+    public async Task UpdateAsync(Destination value)
+    {
+        _context.Destinations.Update(value);
+        await _context.SaveChangesAsync();
+    }
 }
