@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Repository;
-using Infra.Contexts;
+using Infra.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Repositories;
+namespace Infra.Persistence.Repositories;
 
 public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
 {
@@ -27,9 +27,15 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
         await _context.Vehicles.AddAsync(value);
         await _context.SaveChangesAsync();
     }
+
     public async Task UpdateAsync(Vehicle value)
     {
         _context.Vehicles.Update(value);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task SaveChangesAsync()
+    {
         await _context.SaveChangesAsync();
     }
 

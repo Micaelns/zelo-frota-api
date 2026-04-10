@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Contexts;
+namespace Infra.Persistence.Contexts;
 
 public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : DbContext(options)
 {

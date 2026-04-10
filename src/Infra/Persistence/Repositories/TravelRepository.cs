@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Repository;
-using Infra.Contexts;
+using Infra.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Repositories;
+namespace Infra.Persistence.Repositories;
 
 public class TravelRepository(ZeloFrotaDbContext context) : ITravelRepository
 {
