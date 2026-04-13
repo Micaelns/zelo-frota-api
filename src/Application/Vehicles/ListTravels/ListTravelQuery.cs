@@ -2,9 +2,9 @@
 using Domain.Entities;
 using MediatR;
 
-namespace Application.Vehicles.ListVehicleTravels;
+namespace Application.Vehicles.ListTravels;
 
-public class ListVehicleTravelQuery : IRequest<Result<List<Travel>>>
+public class ListTravelQuery : IRequest<Result<List<Travel>>>
 {
     public required Guid VehicleId { get; set; }
     public int Skip { get; set; } = 0;

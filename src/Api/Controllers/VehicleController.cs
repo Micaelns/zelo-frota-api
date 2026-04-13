@@ -1,5 +1,7 @@
 ﻿using Application.Vehicles.CreateVehicles;
+using Application.Vehicles.ListTravels;
 using Application.Vehicles.ListVehicles;
+using Application.Vehicles.StartTravels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,5 +37,33 @@ public class VehicleController(IMediator mediator) : ControllerBase
         } 
 
         return Created("", result.Value);
+    }
+
+    [HttpPost]
+    [Route("/start-travel")]
+    public async Task<IActionResult> StartTravel(StartTravelCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Created("", result.Value);
+    }
+
+    [HttpGet]
+    [Route("/travels")]
+    public async Task<IActionResult> GetStartTravel([FromQuery] ListTravelQuery command)
+    {
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(result);
     }
 }

@@ -1,18 +1,20 @@
 ﻿using Application.DTO;
+using Application.Vehicles.StartTravels;
 using Domain.Entities;
+using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using MediatR;
 
 namespace Application.Vehicles.StartVehicleTravels;
 
-public class StartVehicleTravelHandler(IVehicleRepository vehicleRepository, ITravelRepository travelRepository, IDestinationRepository destinationRepository) : IRequestHandler<StartVehicleTravelCommand, Result<Travel>>
+public class StartVehicleTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, ITravelQuery travelQuery) : IRequestHandler<StartTravelCommand, Result<Travel>>
 {
     private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
-    private readonly ITravelRepository _travelRepository = travelRepository;
     private readonly IDestinationRepository _destinationRepository = destinationRepository;
+    private readonly ITravelQuery _travelQuery = travelQuery;
 
     public async Task<Result<Travel>> Handle(
-        StartVehicleTravelCommand command,
+        StartTravelCommand command,
         CancellationToken cancellationToken)
     {
         try
@@ -27,10 +29,10 @@ public class StartVehicleTravelHandler(IVehicleRepository vehicleRepository, ITr
             if (destination is null)
                 return Result<Travel>.Failure("Destino não encontrado");
 
-            var travel = new Travel(command.VehicleId, command.DestinationId);
-            travel.Starts(command.CurrentMileage, command.WhenTravel);
+            var hasOpenTravel = await _travelQuery.HasOpenTravelInVehicle(command.VehicleId);
+            var travel = vehicle.StartTravel(command.DestinationId, hasOpenTravel, command.WhenTravel);
 
-            await _travelRepository.AddAsync(travel);
+            await _vehicleRepository.SaveChangesAsync();
 
             return Result<Travel>.Success(travel);
         }
