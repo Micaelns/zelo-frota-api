@@ -13,17 +13,16 @@ public class Destination() : Base()
     public string City { get; set; } = string.Empty;
     public string Uf { get; set; } = "SE";
 
-    public static Destination CreateDestination(string zipCode, string? address, string? neighborhood,
+    public static Destination CreateDestination(ZipCode zipCode, string? address, string? neighborhood,
                         string? locality, string city, UF uf)
     {
-        var zipCodeValided= new ZipCode(zipCode);
         if (string.IsNullOrWhiteSpace(city)) {
             throw new ArgumentException("O campo Cidade não podem ser vazio");
         }
 
         return new()
         {
-            ZipCode = zipCodeValided.Value,
+            ZipCode = zipCode.Value,
             Address = address?? string.Empty,
             Neighborhood = neighborhood ?? string.Empty,
             Locality = locality ?? string.Empty,
