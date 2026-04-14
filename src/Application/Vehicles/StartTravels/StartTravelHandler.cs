@@ -28,7 +28,7 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
             if (destination is null)
                 return Result<Travel>.Failure("Destino não encontrado");
 
-            var hasOpenTravel = await _travelQuery.HasOpenTravelInVehicle(command.VehicleId);
+            var hasOpenTravel = await _travelQuery.HasOpenTravelInVehicleAsync(command.VehicleId);
             var travel = vehicle.StartTravel(command.DestinationId, hasOpenTravel, command.WhenTravel);
 
             await _vehicleRepository.SaveChangesAsync();

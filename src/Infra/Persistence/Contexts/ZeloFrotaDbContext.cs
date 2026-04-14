@@ -32,7 +32,7 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
                   .HasForeignKey(t => t.VehicleId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasIndex(t => new { t.VehicleId, t.End });
+            entity.HasIndex(t => new { t.VehicleId, t.End, t.Start });
         });
 
         modelBuilder.Entity<Vehicle>(entity =>

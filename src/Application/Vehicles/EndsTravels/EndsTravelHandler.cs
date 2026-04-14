@@ -23,7 +23,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
             if (vehicle is null)
                 return Result<Travel>.Failure("Veículo não encontrado");
 
-            var travel = await _travelQuery.GetOpenTravelInVehicle(command.VehicleId);
+            var travel = await _travelQuery.GetOpenTravelInVehicleAsync(command.VehicleId);
 
             if (travel is null)
                 return Result<Travel>.Failure("Não existe viagem em andamento");
