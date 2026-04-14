@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Enum;
 using Domain.Interfaces.Repository;
+using Domain.ObjectValues;
 using MediatR;
 
 namespace Application.Destinations.CreateDestinations;
@@ -17,7 +18,14 @@ public class CreateDestinationHandle(IDestinationRepository repository) : IReque
         try
         {
             var uf = (UF)Enum.Parse(typeof(UF), command.Uf, true);
-            var destination = Destination.CreateDestination(command.ZipCode, command.Address, command.Neighborhood, command.Locality, command.City, uf);
+            var zipCode = new ZipCode(command.ZipCode);
+
+            var exists = await _repository.GetByZipCodeAsync(zipCode.Value);
+
+            if (exists is not null)
+                return Result<Guid>.Failure("CEP já cadastrado");
+
+            var destination = Destination.CreateDestination(zipCode, command.Address, command.Neighborhood, command.Locality, command.City, uf);
             await _repository.AddAsync(destination);
             return Result<Guid>.Success(destination.Id);
         }

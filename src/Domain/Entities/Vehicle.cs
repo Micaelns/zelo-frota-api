@@ -29,4 +29,29 @@ public class Vehicle : Base
         Mileage = mileage;
     }
 
+    public Travel StartTravel(Guid destinationId, bool hasOpenTravel, DateTime? when = null)
+    {
+        if (hasOpenTravel)
+            throw new InvalidOperationException("Já existe uma viagem em andamento");
+
+        var travel = new Travel(this.Id, destinationId);
+
+        travel.Starts(this.Mileage, when);
+
+        _travels.Add(travel);
+
+        return travel;
+    }
+
+    public Travel EndTravel(Travel travel, int finishMileage, float fuelQTD, DateTime? when = null)
+    {
+        if (finishMileage < this.Mileage)
+            throw new ArgumentException("Quilometragem final inválida");
+
+        travel.Ends(finishMileage, fuelQTD, when);
+
+        this.NewMileage(finishMileage);
+
+        return travel;
+    }
 }

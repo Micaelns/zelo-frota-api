@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infra.Migrations
 {
     [DbContext(typeof(ZeloFrotaDbContext))]
-    [Migration("20260409164900_InicialMigration")]
-    partial class InicialMigration
+    [Migration("20260413130259_firstMigration")]
+    partial class firstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,6 @@ namespace Infra.Migrations
             modelBuilder.Entity("Domain.Entities.Travel", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<float?>("Autonomy")
@@ -96,7 +95,7 @@ namespace Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("VehicleId", "End");
 
                     b.ToTable("Travels");
                 });

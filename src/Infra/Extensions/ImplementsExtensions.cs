@@ -1,5 +1,6 @@
-﻿using Domain.Interfaces.Repository;
-using Infra.Repositories;
+﻿using Domain.Interfaces.Query;
+using Domain.Interfaces.Repository;
+using Infra.Persistence.Queries;
 using Infra.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +12,8 @@ public static class ImplementsExtensions
     {
         services.AddScoped<IVehicleRepository, VehicleRepository>();
         services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
-        services.AddScoped<ITravelRepository, TravelRepository>();
         services.AddScoped<IDestinationRepository, DestinationRepository>();
+        services.AddScoped<ITravelQuery, TravelQuery>();
         return services;
     }
 }

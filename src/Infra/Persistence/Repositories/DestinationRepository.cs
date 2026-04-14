@@ -33,4 +33,11 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
         _context.Destinations.Update(value);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Destination?> GetByZipCodeAsync(string zipCode)
+    {
+        return await _context.Destinations
+                    .Where(v => v.ZipCode == zipCode)
+                    .FirstOrDefaultAsync();
+    }
 }

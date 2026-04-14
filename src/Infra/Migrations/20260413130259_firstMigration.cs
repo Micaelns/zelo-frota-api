@@ -5,7 +5,7 @@
 namespace Infra.Migrations
 {
     /// <inheritdoc />
-    public partial class InicialMigration : Migration
+    public partial class firstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,9 +86,9 @@ namespace Infra.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Travels_VehicleId",
+                name: "IX_Travels_VehicleId_End",
                 table: "Travels",
-                column: "VehicleId");
+                columns: new[] { "VehicleId", "End" });
         }
 
         /// <inheritdoc />

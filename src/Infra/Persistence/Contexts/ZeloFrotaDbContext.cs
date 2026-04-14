@@ -20,6 +20,19 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
         modelBuilder.Entity<Travel>(entity =>
         {
             entity.HasKey(v => v.Id);
+            entity.Property(e => e.VehicleId)
+            .IsRequired();
+            entity.Property(e => e.DestinationId)
+                .IsRequired();
+            entity.Property(t => t.Id)
+                .ValueGeneratedNever();
+
+            entity.HasOne<Vehicle>()
+                  .WithMany(v => v.Travels)
+                  .HasForeignKey(t => t.VehicleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(t => new { t.VehicleId, t.End, t.Start });
         });
 
         modelBuilder.Entity<Vehicle>(entity =>
@@ -29,6 +42,10 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
             entity.Property(v => v.Plate)
                 .IsRequired()
                 .HasMaxLength(10);
+
+            // 🔥 necessário por causa do campo privado (_travels)
+            entity.Navigation(v => v.Travels)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
         modelBuilder.Entity<VehicleType>(entity =>

@@ -61,7 +61,6 @@ namespace Infra.Migrations
             modelBuilder.Entity("Domain.Entities.Travel", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<float?>("Autonomy")
@@ -93,7 +92,7 @@ namespace Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("VehicleId", "End");
 
                     b.ToTable("Travels");
                 });

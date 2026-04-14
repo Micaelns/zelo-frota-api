@@ -1,5 +1,10 @@
-﻿using Application.Vehicles.CreateVehicles;
+﻿using Api.Requests;
+using Api.Requests.Vehicles;
+using Application.Vehicles.CreateVehicles;
+using Application.Vehicles.EndsTravels;
+using Application.Vehicles.ListTravels;
 using Application.Vehicles.ListVehicles;
+using Application.Vehicles.StartTravels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,5 +40,67 @@ public class VehicleController(IMediator mediator) : ControllerBase
         } 
 
         return Created("", result.Value);
+    }
+
+    [HttpPost]
+    [Route("{vehicleId}/start-travel")]
+    public async Task<IActionResult> StartTravel([FromRoute] Guid vehicleId, [FromBody] StartTravelRequest request)
+    {
+        var command = new StartTravelCommand
+        {
+            VehicleId = vehicleId,
+            DestinationId = request.DestinationId,
+            WhenTravel = request.WhenTravel
+        };
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Created("", result.Value);
+    }
+
+    [HttpPost]
+    [Route("{vehicleId}/ends-travel")]
+    public async Task<IActionResult> EndsTravel([FromRoute] Guid vehicleId, [FromBody] EndsTravelRequest request)
+    {
+        var command = new EndsTravelCommand
+        {
+            VehicleId = vehicleId,
+            FinishMileage = request.FinishMileage,
+            FuelQTD = request.FuelQTD,
+            WhenArrived = request.WhenArrived
+        };
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Created("", result.Value);
+    }
+
+    [HttpGet]
+    [Route("{vehicleId}/travels")]
+    public async Task<IActionResult> GetStartTravel([FromRoute] Guid vehicleId, [FromQuery] PaginateRequest request)
+    {
+        var command = new ListTravelQuery
+        {
+            VehicleId = vehicleId,
+            Skip = request.Skip,
+            Take = request.Take
+        };
+
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(result);
     }
 }

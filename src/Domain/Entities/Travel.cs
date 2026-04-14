@@ -28,6 +28,11 @@ public class Travel : Base
 
     public void Ends(int finishMileage, float fuelQTD, DateTime? whenArrived)
     {
+        if (FinishedMileage is not null)
+        {
+            throw new InvalidOperationException("A viagem já foi finalizada");
+        }
+
         if ( finishMileage < 0)
         {
             throw new ArgumentException("Quilometragem informada é inválida");

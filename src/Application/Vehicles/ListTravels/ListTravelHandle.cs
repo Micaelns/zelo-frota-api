@@ -1,16 +1,18 @@
 ﻿using Application.DTO;
+using Application.Vehicles.ListTravels;
 using Domain.Entities;
+using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using MediatR;
 
 namespace Application.Vehicles.ListVehicleTravels;
 
-public class ListVehicleTravelHandle(ITravelRepository travelRepository, IVehicleRepository vehicleRepository) : IRequestHandler<ListVehicleTravelQuery, Result<List<Travel>>>
+public class ListTravelHandle(ITravelQuery travelQuery, IVehicleRepository vehicleRepository) : IRequestHandler<ListTravelQuery, Result<List<Travel>>>
 {
-    private readonly ITravelRepository _travelRepository = travelRepository;
+    private readonly ITravelQuery _travelQuery = travelQuery;
     private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
     public async Task<Result<List<Travel>>> Handle(
-        ListVehicleTravelQuery command,
+        ListTravelQuery command,
         CancellationToken cancellationToken)
     {
         try
@@ -20,7 +22,7 @@ public class ListVehicleTravelHandle(ITravelRepository travelRepository, IVehicl
             if (vehicle is null)
                 return Result<List<Travel>>.Failure("Veículo não encontrado");
 
-            var vehicleTravelList = await _travelRepository.GetTravelsByVehicleAsync(command.VehicleId, command.Skip, command.Take);
+            var vehicleTravelList = await _travelQuery.GetTravelsByVehicleAsync(command.VehicleId,command.Skip, command.Take);
 
             return Result<List<Travel>>.Success(vehicleTravelList.ToList());
         }
