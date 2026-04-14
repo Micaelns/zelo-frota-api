@@ -43,5 +43,15 @@ public class Vehicle : Base
         return travel;
     }
 
+    public Travel EndTravel(Travel travel, int finishMileage, float fuelQTD, DateTime? when = null)
+    {
+        if (finishMileage < this.Mileage)
+            throw new ArgumentException("Quilometragem final inválida");
 
+        travel.Ends(finishMileage, fuelQTD, when);
+
+        this.NewMileage(finishMileage);
+
+        return travel;
+    }
 }

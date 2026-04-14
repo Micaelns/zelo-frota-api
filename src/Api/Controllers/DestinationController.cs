@@ -1,7 +1,5 @@
 ﻿using Application.Destinations.CreateDestinations;
 using Application.Destinations.ListDestinations;
-using Application.VehicleTypes.CreateVehicleTypes;
-using Application.VehicleTypes.ListVehicleTypes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

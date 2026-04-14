@@ -1,13 +1,12 @@
 ﻿using Application.DTO;
-using Application.Vehicles.StartTravels;
 using Domain.Entities;
 using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using MediatR;
 
-namespace Application.Vehicles.StartVehicleTravels;
+namespace Application.Vehicles.StartTravels;
 
-public class StartVehicleTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, ITravelQuery travelQuery) : IRequestHandler<StartTravelCommand, Result<Travel>>
+public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, ITravelQuery travelQuery) : IRequestHandler<StartTravelCommand, Result<Travel>>
 {
     private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
     private readonly IDestinationRepository _destinationRepository = destinationRepository;

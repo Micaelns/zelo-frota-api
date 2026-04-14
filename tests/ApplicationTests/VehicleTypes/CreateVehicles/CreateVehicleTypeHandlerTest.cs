@@ -1,5 +1,4 @@
-﻿using Application.Vehicles.CreateVehicles;
-using Application.VehicleTypes.CreateVehicleTypes;
+﻿using Application.VehicleTypes.CreateVehicleTypes;
 using Domain.Entities;
 using Domain.Interfaces.Repository;
 using Moq;
