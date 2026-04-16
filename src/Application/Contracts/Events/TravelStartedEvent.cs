@@ -1,5 +1,5 @@
-﻿using Application.Helpers;
-using Application.Interfaces.Messaging;
+﻿using Application.Contracts.Messaging;
+using Application.Helpers;
 
 namespace Application.Contracts.Events;
 

@@ -1,4 +1,4 @@
-﻿using Application.Vehicles.CreateVehicles;
+﻿using Application.UseCases.Vehicles.CreateVehicle;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infra.Extensions;

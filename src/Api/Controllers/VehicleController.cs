@@ -1,10 +1,10 @@
 ﻿using Api.Requests;
 using Api.Requests.Vehicles;
-using Application.Vehicles.CreateVehicles;
-using Application.Vehicles.EndsTravels;
-using Application.Vehicles.ListTravels;
-using Application.Vehicles.ListVehicles;
-using Application.Vehicles.StartTravels;
+using Application.UseCases.Travels.EndsTravel;
+using Application.UseCases.Travels.ListTravel;
+using Application.UseCases.Travels.StartTravel;
+using Application.UseCases.Vehicles.CreateVehicle;
+using Application.UseCases.Vehicles.ListVehicle;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,11 +20,11 @@ public class VehicleController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Index([FromQuery] ListVehicleQuery query)
     {
         var result = await _mediator.Send(query);
-            
-        if(!result.IsSuccess)
+
+        if (!result.IsSuccess)
         {
             return BadRequest(result.Error);
-        } 
+        }
 
         return Ok(result);
     }
@@ -33,11 +33,11 @@ public class VehicleController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Create(CreateVehicleCommand command)
     {
         var result = await _mediator.Send(command);
-            
-        if(!result.IsSuccess)
+
+        if (!result.IsSuccess)
         {
             return BadRequest(result.Error);
-        } 
+        }
 
         return Created("", result.Value);
     }

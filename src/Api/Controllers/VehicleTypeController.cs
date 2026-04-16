@@ -1,5 +1,5 @@
-﻿using Application.VehicleTypes.CreateVehicleTypes;
-using Application.VehicleTypes.ListVehicleTypes;
+﻿using Application.UseCases.VehicleTypes.CreateVehicleType;
+using Application.UseCases.VehicleTypes.ListVehicleType;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

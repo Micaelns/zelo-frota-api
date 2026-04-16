@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.Messaging;
+﻿using Application.Contracts.Messaging;
 using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using Infra.Messaging.Kafka;

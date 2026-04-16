@@ -1,5 +1,5 @@
-﻿using Application.Destinations.CreateDestinations;
-using Application.Destinations.ListDestinations;
+﻿using Application.UseCases.Destinations.CreateDestination;
+using Application.UseCases.Destinations.ListDestination;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
