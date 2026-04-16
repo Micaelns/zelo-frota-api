@@ -23,7 +23,7 @@ public class Travel : Base
             throw new InvalidOperationException("Viagem já iniciada");
 
         StartedMileage = currentMileage;
-        Start = whenTravel??DateTime.Now;
+        Start = whenTravel??DateTime.UtcNow;
     }
 
     public void Ends(int finishMileage, float fuelQTD, DateTime? whenArrived)
@@ -54,7 +54,7 @@ public class Travel : Base
         }
 
         FinishedMileage = finishMileage;
-        End = whenArrived ?? DateTime.Now;
+        End = whenArrived ?? DateTime.UtcNow;
         var distance = FinishedMileage - StartedMileage;
         Autonomy = distance / fuelQTD;
     }

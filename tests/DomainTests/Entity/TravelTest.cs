@@ -20,7 +20,7 @@ public class TravelTest
     public void Starts_WithValidParam_SetCorrectStart()
     {
         var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
-        var tomorrow = DateTime.Now.AddDays(1);
+        var tomorrow = DateTime.UtcNow.AddDays(1);
         var currentMileage = 2000;
 
         travel.Starts(currentMileage, tomorrow);
@@ -33,7 +33,7 @@ public class TravelTest
     public void Starts_WithValidParamTwice_ReturnException()
     {
         var travel = new Travel(Guid.NewGuid(), Guid.NewGuid());
-        var tomorrow = DateTime.Now.AddDays(1);
+        var tomorrow = DateTime.UtcNow.AddDays(1);
         var currentMileage = 2000;
 
         travel.Starts(currentMileage, tomorrow);
@@ -53,8 +53,8 @@ public class TravelTest
         var expectAutonomy = expectTraveled / fuelQTD;
         var currentMileage = 2000;
         var endMileage = currentMileage + expectTraveled;
-        var now = DateTime.Now;
-        var tomorrow = DateTime.Now.AddDays(1);
+        var now = DateTime.UtcNow;
+        var tomorrow = DateTime.UtcNow.AddDays(1);
 
         travel.Starts(currentMileage,now);
         travel.Ends(endMileage, fuelQTD, tomorrow);
@@ -84,8 +84,8 @@ public class TravelTest
         var fuelQTD = 800;
         var currentMileage = 2000;
         var endMileage = currentMileage + 4000;
-        var now = DateTime.Now;
-        var tomorrow = DateTime.Now.AddDays(1);
+        var now = DateTime.UtcNow;
+        var tomorrow = DateTime.UtcNow.AddDays(1);
 
         travel.Starts(currentMileage, now);
         travel.Ends(endMileage, fuelQTD, tomorrow);
@@ -125,8 +125,8 @@ public class TravelTest
         var fuelQTD = 800;
         var currentMileage = 2000;
         var endMileage = currentMileage - 500;
-        var now = DateTime.Now;
-        var tomorrow = DateTime.Now.AddDays(1);
+        var now = DateTime.UtcNow;
+        var tomorrow = DateTime.UtcNow.AddDays(1);
 
         travel.Starts(currentMileage, tomorrow);
         var excecao = Assert.Throws<ArgumentException>(() => travel.Ends(endMileage, fuelQTD, now));

@@ -2,6 +2,9 @@ using Infra.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<Infra.Messaging.Kafka.KafkaSettings>(
+    builder.Configuration.GetSection("Kafka")
+);
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -11,6 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistence();
 builder.Services.ImplementsRepository();
+builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases();
 
 var app = builder.Build();

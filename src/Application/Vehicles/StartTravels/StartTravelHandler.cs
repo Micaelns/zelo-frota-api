@@ -1,4 +1,6 @@
-﻿using Application.DTO;
+﻿using Application.Contracts.Events;
+using Application.DTO;
+using Application.Interfaces.Messaging;
 using Domain.Entities;
 using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
@@ -6,11 +8,12 @@ using MediatR;
 
 namespace Application.Vehicles.StartTravels;
 
-public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, ITravelQuery travelQuery) : IRequestHandler<StartTravelCommand, Result<Travel>>
+public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, ITravelQuery travelQuery, IMessageProducer producer) : IRequestHandler<StartTravelCommand, Result<Travel>>
 {
     private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
     private readonly IDestinationRepository _destinationRepository = destinationRepository;
     private readonly ITravelQuery _travelQuery = travelQuery;
+    private readonly IMessageProducer _producer = producer;
 
     public async Task<Result<Travel>> Handle(
         StartTravelCommand command,
@@ -32,6 +35,7 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
             var travel = vehicle.StartTravel(command.DestinationId, hasOpenTravel, command.WhenTravel);
 
             await _vehicleRepository.SaveChangesAsync();
+            await Notify(travel);
 
             return Result<Travel>.Success(travel);
         }
@@ -39,5 +43,17 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
         {
             return Result<Travel>.Failure(ex.Message);
         }
+    }
+
+    private async Task Notify(Travel travel)
+    {
+        await _producer.PublishAsync(new TravelStartedEvent()
+        {
+            TravelId = travel.Id,
+            VehicleId = travel.VehicleId,
+            DestinationId = travel.DestinationId,
+            StartedMileage = travel.StartedMileage,
+            Start = travel.Start
+        });
     }
 }
