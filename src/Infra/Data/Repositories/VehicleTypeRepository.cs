@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Repository;
-using Infra.Persistence.Contexts;
+using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Persistence.Repositories;
+namespace Infra.Data.Repositories;
 
 public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRepository
 {

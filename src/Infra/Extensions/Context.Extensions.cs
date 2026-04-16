@@ -1,16 +1,22 @@
-﻿using Infra.Persistence.Contexts;
+﻿using Infra.Data.Contexts;
+using Infra.Data.Interseptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Infra.Extensions;
 
 public static class RegisterContext
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection Services)
+    public static IServiceCollection AddContexts(this IServiceCollection services)
     {
-        Services.AddDbContext<ZeloFrotaDbContext>(options =>
-                options.UseSqlite("Data Source=ZeloFrota.db")
+        services.AddScoped<SlowQueryInterceptor>();
+        services.AddDbContext<ZeloFrotaDbContext>((sp, options) =>
+        {
+            options.UseSqlite("Data Source=ZeloFrota.db");
+            options.AddInterceptors(sp.GetRequiredService<SlowQueryInterceptor>());
+        }
         );
-        return Services;
+        return services;
     }
 }

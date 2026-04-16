@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddPersistence();
+builder.Services.AddContexts();
 builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases();

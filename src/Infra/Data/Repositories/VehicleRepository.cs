@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Repository;
-using Infra.Persistence.Contexts;
+using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Persistence.Repositories;
+namespace Infra.Data.Repositories;
 
 public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
 {
@@ -12,6 +12,7 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
     public async Task<IEnumerable<Vehicle>> AllAsync(int skip, int take = 10)
     {
         return await _context.Vehicles
+                    .OrderByDescending(element => element.Plate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();

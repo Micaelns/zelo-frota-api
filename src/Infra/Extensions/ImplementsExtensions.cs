@@ -1,10 +1,10 @@
 ﻿using Application.Contracts.Messaging;
 using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
+using Infra.Data.Queries;
+using Infra.Data.Repositories;
 using Infra.Messaging.Kafka;
 using Infra.Messaging.Kafka.Interfaces;
-using Infra.Persistence.Queries;
-using Infra.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infra.Extensions;

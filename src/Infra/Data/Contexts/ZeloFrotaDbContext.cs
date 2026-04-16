@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Persistence.Contexts;
+namespace Infra.Data.Contexts;
 
 public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : DbContext(options)
 {
@@ -43,7 +43,7 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
                 .IsRequired()
                 .HasMaxLength(10);
 
-            // 🔥 necessário por causa do campo privado (_travels)
+            // necessário por causa do campo privado (_travels)
             entity.Navigation(v => v.Travels)
                 .UsePropertyAccessMode(PropertyAccessMode.Field);
         });

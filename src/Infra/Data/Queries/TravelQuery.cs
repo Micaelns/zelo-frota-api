@@ -1,9 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces.Query;
-using Infra.Persistence.Contexts;
+using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infra.Persistence.Queries;
+namespace Infra.Data.Queries;
 
 public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
 {
@@ -25,7 +25,7 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
     public async Task<IEnumerable<Travel>> GetTravelsByVehicleAsync(Guid vehicleId, int skip, int take = 10)
     {
         skip = Math.Max(0, skip);
-        take = Math.Clamp(take, 1, 100);
+        take = Math.Clamp(take, 1, 1000);
 
         return await _context.Travels
             .AsNoTracking()

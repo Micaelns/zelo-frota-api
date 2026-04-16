@@ -4,7 +4,8 @@ namespace Domain.Entities;
 
 public class Vehicle : Base
 {
-    protected Vehicle() {
+    protected Vehicle()
+    {
         Plate = string.Empty;
     }
 
