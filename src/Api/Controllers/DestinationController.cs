@@ -7,10 +7,10 @@ namespace Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DestinationController(IMediator mediator, ILogger<VehicleController> logger) : ControllerBase
+public class DestinationController(IMediator mediator, ILogger<DestinationController> logger) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
-    private readonly ILogger<VehicleController> _logger = logger;
+    private readonly ILogger<DestinationController> _logger = logger;
 
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] ListDestinationQuery query)
