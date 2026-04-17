@@ -12,6 +12,7 @@ public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRep
     public async Task<IEnumerable<VehicleType>> AllAsync(int skip, int take = 10)
     {
         return await _context.VehicleTypes
+                    .OrderByDescending(element => element.Name)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync(); 

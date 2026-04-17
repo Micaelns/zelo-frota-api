@@ -12,9 +12,10 @@ namespace Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class VehicleController(IMediator mediator) : ControllerBase
+public class VehicleController(IMediator mediator, ILogger<VehicleController> logger) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly ILogger<VehicleController> _logger = logger;
 
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] ListVehicleQuery query)
@@ -23,9 +24,11 @@ public class VehicleController(IMediator mediator) : ControllerBase
 
         if (!result.IsSuccess)
         {
+            _logger.LogWarning("Problema na listagem de veículo. BadRequest: {@request} : {@error}", query, result.Error);
             return BadRequest(result.Error);
         }
 
+        _logger.LogInformation("Sucesso na listagem de veículo.");
         return Ok(result);
     }
 
@@ -36,9 +39,11 @@ public class VehicleController(IMediator mediator) : ControllerBase
 
         if (!result.IsSuccess)
         {
+            _logger.LogWarning("Problema na criação de veículo. {@command} {@error}", command, result.Error);
             return BadRequest(result.Error);
         }
 
+        _logger.LogInformation("Sucesso na criação de veículo. Result: {@result}", result.Value);
         return Created("", result.Value);
     }
 
@@ -56,9 +61,11 @@ public class VehicleController(IMediator mediator) : ControllerBase
 
         if (!result.IsSuccess)
         {
+            _logger.LogWarning("Problema ao iniciar viagem. {@command} {@error}", command, result.Error);
             return BadRequest(result.Error);
         }
 
+        _logger.LogInformation("Sucesso ao iniciar viagem. {@command}", command);
         return Created("", result.Value);
     }
 
@@ -77,6 +84,7 @@ public class VehicleController(IMediator mediator) : ControllerBase
 
         if (!result.IsSuccess)
         {
+            _logger.LogWarning("Problema na Criação da viagem. {@command} {@error}", command, result.Error);
             return BadRequest(result.Error);
         }
 
@@ -98,9 +106,11 @@ public class VehicleController(IMediator mediator) : ControllerBase
 
         if (!result.IsSuccess)
         {
+            _logger.LogWarning("Problema ao listar viagens. BadRequest: {@command} : {@error}", command, result.Error);
             return BadRequest(result.Error);
         }
 
+        _logger.LogInformation("Sucesso ao listar viagens. Result: {@result}", result.Value);
         return Ok(result);
     }
 }

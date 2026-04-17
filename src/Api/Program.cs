@@ -1,6 +1,16 @@
 using Infra.Extensions;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, config) =>
+{
+    config
+        .ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console(
+            outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
+        );
+});
 
 builder.Services.Configure<Infra.Messaging.Kafka.KafkaSettings>(
     builder.Configuration.GetSection("Kafka")
@@ -18,6 +28,8 @@ builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases();
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
