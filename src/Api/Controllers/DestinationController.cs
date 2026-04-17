@@ -34,11 +34,11 @@ public class DestinationController(IMediator mediator, ILogger<DestinationContro
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na criação de destinos. {@command} {@error}", command, result.Error);
+            _logger.LogWarning("Problema na criação de destino. {@command} {@error}", command, result.Error);
             return BadRequest(result.Error);
         }
 
-        _logger.LogInformation("Sucesso na criação de destinos.");
+        _logger.LogInformation("Sucesso na criação de destino.");
         return Created("", result.Value);
     }
 }

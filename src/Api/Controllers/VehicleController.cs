@@ -110,7 +110,7 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
             return BadRequest(result.Error);
         }
 
-        _logger.LogInformation("Sucesso ao listar viagens. Result: {@result}", result.Value);
+        _logger.LogInformation("Sucesso ao listar viagens.");
         return Ok(result);
     }
 }

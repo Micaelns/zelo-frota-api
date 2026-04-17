@@ -2,12 +2,14 @@
 using Domain.Entities;
 using Domain.Interfaces.Repository;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Destinations.ListDestination;
 
-public class ListDestinationHandle(IDestinationRepository repository) : IRequestHandler<ListDestinationQuery, Result<List<Destination>>>
+public class ListDestinationHandler(IDestinationRepository repository, ILogger<ListDestinationHandler> logger) : IRequestHandler<ListDestinationQuery, Result<List<Destination>>>
 {
     private readonly IDestinationRepository _repository = repository;
+    private readonly ILogger<ListDestinationHandler> _logger = logger;
     public async Task<Result<List<Destination>>> Handle(
         ListDestinationQuery command,
         CancellationToken cancellationToken)
@@ -15,11 +17,13 @@ public class ListDestinationHandle(IDestinationRepository repository) : IRequest
         try
         {
             var DestinationList = await _repository.AllAsync(command.Skip, command.Take);
+            _logger.LogInformation("Sucesso na listagem dos destinos. {@command}", command);
 
             return Result<List<Destination>>.Success(DestinationList.ToList());
         }
         catch (Exception ex)
         {
+            _logger.LogError("Erro no processo de listagem de destino. {@error}", ex.Message);
             return Result<List<Destination>>.Failure(ex.Message);
         }
     }

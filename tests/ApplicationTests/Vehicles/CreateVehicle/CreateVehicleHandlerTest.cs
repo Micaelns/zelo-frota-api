@@ -1,6 +1,8 @@
-﻿using Application.UseCases.Vehicles.CreateVehicle;
+﻿using Application.UseCases.Travels.EndsTravel;
+using Application.UseCases.Vehicles.CreateVehicle;
 using Domain.Entities;
 using Domain.Interfaces.Repository;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace ApplicationTests.Vehicles.CreateVehicle;
@@ -10,19 +12,21 @@ public class CreateVehicleHandlerTest
     private readonly CancellationToken _cancellationToken = new();
     private readonly Mock<IVehicleRepository> _vehicleMockRepository;
     private readonly Mock<IVehicleTypeRepository> _vehicleTypeMockRepository;
+    private readonly Mock<ILogger<CreateVehicleHandler>> _loggerMock;
 
     public CreateVehicleHandlerTest()
     {
         _cancellationToken = new CancellationToken();
         _vehicleMockRepository = new Mock<IVehicleRepository>();
         _vehicleTypeMockRepository = new Mock<IVehicleTypeRepository>();
+        _loggerMock = new Mock<ILogger<CreateVehicleHandler>>();
     }
 
     [Fact]
     public async Task Handler_WithInvalidPlate_ReturnResultFailure()
     {
         var command = new CreateVehicleCommand() { Plate = "ASS000", Type = new Guid() };
-        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object);
+        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object, _loggerMock.Object);
 
         var result = await createVehicleHandler.Handle(command, _cancellationToken);
 
@@ -35,7 +39,7 @@ public class CreateVehicleHandlerTest
     {
         var command = new CreateVehicleCommand() { Plate = "ASS0000", Type = new Guid() };
         var validVehicle = new Vehicle(Guid.NewGuid(), new("AAA1A23"), 10000);
-        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object);
+        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object, _loggerMock.Object);
         _vehicleMockRepository.Setup(repo => repo.GetByPlateAsync(It.IsAny<string>())).ReturnsAsync(validVehicle);
 
         var result = await createVehicleHandler.Handle(command, _cancellationToken);
@@ -49,7 +53,7 @@ public class CreateVehicleHandlerTest
     public async Task Handler_WithNotFoundVehicleType_ReturnResultFailure()
     {
         var command = new CreateVehicleCommand() { Plate = "ASS0000", Type = new Guid() };
-        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object);
+        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object, _loggerMock.Object);
 
         var result = await createVehicleHandler.Handle(command, _cancellationToken);
 
@@ -63,7 +67,7 @@ public class CreateVehicleHandlerTest
     {
         var command = new CreateVehicleCommand() { Plate = "ASS0000", Type = new Guid() };
         var validVehicleType = new VehicleType("TesteTipo");
-        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object);
+        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object, _loggerMock.Object);
         _vehicleTypeMockRepository.Setup(repo => repo.FindAsync(It.IsAny<Guid>())).ReturnsAsync(validVehicleType);
         _vehicleMockRepository.Setup(repo => repo.AddAsync(It.IsAny<Vehicle>())).ThrowsAsync(new Exception("Erro inesperado"));
 
@@ -78,7 +82,7 @@ public class CreateVehicleHandlerTest
     {
         var command = new CreateVehicleCommand() { Plate = "ASS0000", Type = new Guid() };
         var validVehicleType = new VehicleType("TesteTipo");
-        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object);
+        var createVehicleHandler = new CreateVehicleHandler(_vehicleMockRepository.Object, _vehicleTypeMockRepository.Object, _loggerMock.Object);
         _vehicleTypeMockRepository.Setup(repo => repo.FindAsync(It.IsAny<Guid>())).ReturnsAsync(validVehicleType);
 
         var result = await createVehicleHandler.Handle(command, _cancellationToken);
