@@ -2,6 +2,7 @@
 using Api.Requests.Vehicles;
 using Application.UseCases.Travels.EndsTravel;
 using Application.UseCases.Travels.ListTravel;
+using Application.UseCases.Travels.MonthReport;
 using Application.UseCases.Travels.StartTravel;
 using Application.UseCases.Vehicles.CreateVehicle;
 using Application.UseCases.Vehicles.ListVehicle;
@@ -111,6 +112,29 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
         }
 
         _logger.LogInformation("Sucesso ao listar viagens.");
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Route("{vehicleId}/travels/reports")]
+    public async Task<IActionResult> GetReportsTravel([FromRoute] Guid vehicleId, ReportTravelRequest request)
+    {
+        var command = new MonthReportCommand
+        {
+            VehicleId = vehicleId,
+            DestinationId = request.DestinationId,
+            MonthYearTravel = request.MonthYearTravel
+        };
+
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Problema ao Solicitar Relatório. BadRequest: {@command} : {@error}", command, result.Error);
+            return BadRequest(result.Error);
+        }
+
+        _logger.LogInformation("Sucesso ao solicitar relatório de viagens.");
         return Ok(result);
     }
 }

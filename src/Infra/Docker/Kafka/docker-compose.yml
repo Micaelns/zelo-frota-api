@@ -44,6 +44,7 @@ services:
 
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic vehicle-travel-start --partitions 3 --replication-factor 1 &&
       kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic vehicle-travel-end --partitions 3 --replication-factor 1 &&
+      kafka-topics --bootstrap-server kafka:29092 --create --if-not-exists --topic report-vehicle-travel --partitions 3 --replication-factor 1 &&
 
       echo 'Tópicos criados com sucesso!'
       "

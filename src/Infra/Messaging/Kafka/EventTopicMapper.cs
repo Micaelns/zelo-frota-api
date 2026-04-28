@@ -23,6 +23,9 @@ public class EventTopicMapper: IEventTopicMapper
             var t when t == typeof(TravelEndedEvent)
                 => _settings.Topics["TravelEnded"],
 
+            var t when t == typeof(TravelReportEvent)
+                => _settings.Topics["ReportTravels"],
+
             _ => throw new InvalidOperationException($"No topic mapping for {typeof(T).Name}")
         };
     }
