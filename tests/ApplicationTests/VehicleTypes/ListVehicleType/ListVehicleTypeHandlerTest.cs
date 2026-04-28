@@ -1,5 +1,4 @@
-﻿using Application.UseCases.Vehicles.ListVehicle;
-using Application.UseCases.VehicleTypes.ListVehicleType;
+﻿using Application.UseCases.VehicleTypes.ListVehicleType;
 using Domain.Entities;
 using Domain.Interfaces.Repository;
 using Microsoft.Extensions.Logging;

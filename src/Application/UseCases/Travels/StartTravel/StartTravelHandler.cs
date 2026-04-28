@@ -1,7 +1,6 @@
 ﻿using Application.Contracts.Events;
 using Application.Contracts.Messaging;
 using Application.DTO;
-using Application.UseCases.Travels.EndsTravel;
 using Domain.Entities;
 using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;

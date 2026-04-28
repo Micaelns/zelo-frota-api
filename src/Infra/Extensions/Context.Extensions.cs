@@ -2,7 +2,6 @@
 using Infra.Data.Interseptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Infra.Extensions;
 

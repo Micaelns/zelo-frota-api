@@ -1,5 +1,4 @@
-﻿using Application.UseCases.Travels.EndsTravel;
-using Application.UseCases.Vehicles.CreateVehicle;
+﻿using Application.UseCases.Vehicles.CreateVehicle;
 using Domain.Entities;
 using Domain.Interfaces.Repository;
 using Microsoft.Extensions.Logging;
