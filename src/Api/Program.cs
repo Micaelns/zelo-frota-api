@@ -22,7 +22,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddContexts();
+var sqlQueryString = builder.Configuration["connectionStringSqlServer"];
+builder.Services.AddContexts(sqlQueryString);
+
 builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases();

@@ -9,7 +9,7 @@ public class Travel : Base
         DestinationId = destinationId;
     }
 
-    public Guid VehicleId { get; private set; } 
+    public Guid VehicleId { get; private set; }
     public Guid DestinationId { get; private set; }
     public int? StartedMileage { get; private set; }
     public int? FinishedMileage { get; private set; }

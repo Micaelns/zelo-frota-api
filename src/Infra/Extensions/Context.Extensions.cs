@@ -7,14 +7,14 @@ namespace Infra.Extensions;
 
 public static class RegisterContext
 {
-    public static IServiceCollection AddContexts(this IServiceCollection services)
+    public static IServiceCollection AddContexts(this IServiceCollection services, string? sqlQueryString)
     {
         services.AddScoped<SlowQueryInterceptor>();
         services.AddDbContext<ZeloFrotaDbContext>((sp, options) =>
         {
-            options.UseSqlite("Data Source=ZeloFrota.db");
+            options.UseSqlServer(sqlQueryString);
             options.AddInterceptors(sp.GetRequiredService<SlowQueryInterceptor>());
-        }
+    }
         );
         return services;
     }
