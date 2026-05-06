@@ -61,7 +61,8 @@ public class MonthReportHandler(IVehicleRepository vehicleRepository, IDestinati
         {
             VehicleId = command.VehicleId,
             DestinationId = command.DestinationId,
-            MonthYearTravel = command.MonthYearTravel,
+            MonthTravel = command.MonthTravel,
+            YearTravel = command.YearTravel
         });
     }
 }

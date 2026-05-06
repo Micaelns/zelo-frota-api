@@ -116,16 +116,9 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
     }
 
     [HttpPost]
-    [Route("{vehicleId}/travels/reports")]
-    public async Task<IActionResult> GetReportsTravel([FromRoute] Guid vehicleId, ReportTravelRequest request)
+    [Route("travels/reports")]
+    public async Task<IActionResult> GetReportsTravel(MonthReportCommand command)
     {
-        var command = new MonthReportCommand
-        {
-            VehicleId = vehicleId,
-            DestinationId = request.DestinationId,
-            MonthYearTravel = request.MonthYearTravel
-        };
-
         var result = await _mediator.Send(command);
 
         if (!result.IsSuccess)

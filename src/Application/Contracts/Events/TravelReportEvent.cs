@@ -8,5 +8,6 @@ public class TravelReportEvent: IEvent
     public DateTime OccurredAt { get; init; } = DateTime.UtcNow;
     public Guid? VehicleId { get; set; }
     public Guid? DestinationId { get; set; }
-    public DateTime? MonthYearTravel { get; set; }
+    public int? MonthTravel { get; set; }
+    public int? YearTravel { get; set; }
 }
