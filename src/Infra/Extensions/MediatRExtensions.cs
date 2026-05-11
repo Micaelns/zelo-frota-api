@@ -5,9 +5,13 @@ namespace Infra.Extensions;
 
 public static class MediatRExtensions
 {
-    public static IServiceCollection RegisterMediatRUseCases(this IServiceCollection services)
+    public static IServiceCollection RegisterMediatRUseCases(this IServiceCollection services, string? licenseKey)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateVehicleHandler).Assembly));
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(CreateVehicleHandler).Assembly);
+            cfg.LicenseKey = licenseKey;
+        });
         return services;
     }
 }

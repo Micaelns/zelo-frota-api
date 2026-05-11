@@ -22,12 +22,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var sqlQueryString = builder.Configuration["connectionStringSqlServer"];
-builder.Services.AddContexts(sqlQueryString);
+builder.Services.AddContexts(builder.Configuration["connectionStringSqlServer"]);
 
 builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
-builder.Services.RegisterMediatRUseCases();
+builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKey"]);
 
 var app = builder.Build();
 
