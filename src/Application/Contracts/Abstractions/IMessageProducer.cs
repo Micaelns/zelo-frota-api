@@ -1,4 +1,4 @@
-﻿namespace Application.Contracts.Messaging;
+﻿namespace Application.Contracts.Abstractions;
 
 public interface IMessageProducer
 {

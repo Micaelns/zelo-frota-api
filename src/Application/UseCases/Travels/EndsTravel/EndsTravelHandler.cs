@@ -1,5 +1,5 @@
-﻿using Application.Contracts.Events;
-using Application.Contracts.Messaging;
+﻿using Application.Contracts.Abstractions;
+using Application.Contracts.Events;
 using Application.DTO;
 using Domain.Entities;
 using Domain.Interfaces.Query;

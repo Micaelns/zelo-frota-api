@@ -1,4 +1,4 @@
-﻿using Application.Contracts.Messaging;
+﻿using Application.Contracts.Abstractions;
 
 namespace Application.Contracts.Events;
 
