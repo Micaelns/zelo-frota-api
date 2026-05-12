@@ -1,4 +1,4 @@
-﻿using Application.Contracts.Messaging;
+﻿using Application.Contracts.Abstractions;
 using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using Infra.Data.Queries;

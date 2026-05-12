@@ -1,4 +1,4 @@
-﻿using Application.Contracts.Messaging;
+﻿using Application.Contracts.Abstractions;
 using Confluent.Kafka;
 using Infra.Messaging.Kafka.Interfaces;
 using Microsoft.Extensions.Options;
