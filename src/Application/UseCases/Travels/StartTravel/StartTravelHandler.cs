@@ -43,7 +43,7 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
             var travel = vehicle.StartTravel(command.DestinationId, hasOpenTravel, command.WhenTravel);
 
             await _vehicleRepository.SaveChangesAsync();
-            await Notify(travel);
+            await Notify(travel, cancellationToken);
 
             _logger.LogInformation("Viagem do veículo {@Plate} foi iniciada com sucesso.", vehicle.Plate);
             return Result<Travel>.Success(travel);
@@ -55,7 +55,7 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
         }
     }
 
-    private async Task Notify(Travel travel)
+    private async Task Notify(Travel travel, CancellationToken cancellationToken)
     {
         await _producer.PublishAsync(new TravelStartedEvent()
         {
@@ -64,6 +64,6 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
             DestinationId = travel.DestinationId,
             StartedMileage = travel.StartedMileage,
             Start = travel.Start
-        });
+        }, cancellationToken);
     }
 }

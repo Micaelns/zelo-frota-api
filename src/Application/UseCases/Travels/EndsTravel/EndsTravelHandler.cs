@@ -42,7 +42,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
             vehicle.EndTravel(travel, command.FinishMileage, command.FuelQTD, command.WhenArrived);
 
             await _repository.SaveChangesAsync();
-            await Notify(travel, command);
+            await Notify(travel, command, cancellationToken);
 
             _logger.LogInformation("Viagem do veículo {@Plate} foi finalizado com sucesso.", vehicle.Plate);
             return Result<Travel>.Success(travel);
@@ -54,7 +54,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
         }
     }
 
-    private async Task Notify(Travel travel, EndsTravelCommand command)
+    private async Task Notify(Travel travel, EndsTravelCommand command, CancellationToken cancellationToken)
     {
         await _producer.PublishAsync(new TravelEndedEvent()
         {
@@ -66,7 +66,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
             Autonomy = travel.Autonomy,
             Start = travel.Start,
             End = travel.End
-        });
+        }, cancellationToken);
 
     }
 }

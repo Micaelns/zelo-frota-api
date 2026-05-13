@@ -43,19 +43,20 @@ public class MonthReportHandler(IVehicleRepository vehicleRepository, IDestinati
                 }
             }
 
-            await Notify(command);
+            await Notify(command, cancellationToken);
 
             _logger.LogInformation("Solicitação de relatório {@command} enviado com sucesso.", command);
             return Result<string>.Success("Solicitação de relatório enviado com sucesso");
+
         }
         catch (Exception ex)
         {
-            _logger.LogError("Erro no processo de solicitação de relatório. {@error}", ex.Message);
-            return Result<string>.Failure(ex.Message);
+            _logger.LogWarning("Erro no processo de solicitação de relatório. {@error}", ex.Message);
+            return Result<string>.Failure("Erro no processo de solicitação de relatório", ErrorType.Internal);
         }
     }
 
-    private async Task Notify(MonthReportCommand command)
+    private async Task Notify(MonthReportCommand command, CancellationToken cancellationToken)
     {
         await _producer.PublishAsync(new TravelReportEvent()
         {
@@ -63,6 +64,6 @@ public class MonthReportHandler(IVehicleRepository vehicleRepository, IDestinati
             DestinationId = command.DestinationId,
             MonthTravel = command.MonthTravel,
             YearTravel = command.YearTravel
-        });
+        }, cancellationToken);
     }
 }

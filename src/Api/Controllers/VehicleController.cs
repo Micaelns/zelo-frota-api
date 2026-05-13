@@ -124,7 +124,11 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Problema ao Solicitar Relatório. BadRequest: {@command} : {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            
+            if (result.ErrorType == Application.DTO.ErrorType.Validation)
+                return BadRequest(result.Error);
+
+            return StatusCode(500, result.Error);
         }
 
         _logger.LogInformation("Sucesso ao solicitar relatório de viagens.");
