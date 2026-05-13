@@ -20,31 +20,40 @@ public class KafkaProducer : IMessageProducer
         _mapper = mapper;
         _logger = logger;
         var settings = options.Value;
-        var configProducer = new ProducerConfig
+        
+        if (settings.EnableKafkaSend)
         {
-            BootstrapServers = settings.BootstrapServers,
-            MessageTimeoutMs = settings.MessageTimeoutMs,
-            SocketTimeoutMs = settings.SocketTimeoutMs
-        };
-        _producer = new ProducerBuilder<string, string>(configProducer).Build();
-        _retryPolicy = Policy
-            .Handle<ProduceException<string, string>>()
-            .WaitAndRetryAsync(
-                settings.MessageRetry,
-                retryAttempt =>
-                    TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (exception, timeSpan, retryCount, context) =>
-                {
-                    _logger.LogWarning(
-                        exception,
-                        "Erro ao publicar no Kafka. Retry {RetryCount}",
-                        retryCount);
-                });
-
+            var configProducer = new ProducerConfig
+            {
+                BootstrapServers = settings.BootstrapServers,
+                MessageTimeoutMs = settings.MessageTimeoutMs,
+                SocketTimeoutMs = settings.SocketTimeoutMs
+            };
+            _producer = new ProducerBuilder<string, string>(configProducer).Build();
+            _retryPolicy = Policy
+                .Handle<ProduceException<string, string>>()
+                .WaitAndRetryAsync(
+                    settings.MessageRetry,
+                    retryAttempt =>
+                        TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    (exception, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogWarning(
+                            exception,
+                            "Erro ao publicar no Kafka. Retry {RetryCount}",
+                            retryCount);
+                    });
+        }
     }
 
     public async Task PublishAsync<T>(T message, CancellationToken cancellationToken)
     {
+        if (_producer is null)
+        {
+            _logger.LogInformation("O kafka está iniabilitado no momento");
+            return;
+        }
+
         var topic = _mapper.GetTopic<T>();
 
         var json = JsonSerializer.Serialize(message);

@@ -7,4 +7,5 @@ public class KafkaSettings
     public int MessageRetry { get; set; }
     public int MessageTimeoutMs { get; set; }
     public int SocketTimeoutMs { get; set; }
+    public bool EnableKafkaSend {  get; set; }
 }
