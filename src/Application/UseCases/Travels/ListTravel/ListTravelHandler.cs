@@ -1,6 +1,6 @@
-﻿using Application.DTO;
+﻿using Application.Contracts.Abstractions.Travels.Query;
+using Application.DTO;
 using Domain.Entities;
-using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;

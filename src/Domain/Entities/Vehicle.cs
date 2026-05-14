@@ -16,6 +16,7 @@ public class Vehicle : Base
         Mileage = mileage > 0 ? mileage : 0;
     }
     public Guid VehicleTypeId { get; set; }
+    public VehicleType VehicleType { get; set; }
     public string Plate { get; set; }
     public int Mileage { get; private set; }
     private readonly List<Travel> _travels = [];

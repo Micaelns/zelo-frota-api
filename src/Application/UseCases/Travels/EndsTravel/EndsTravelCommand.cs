@@ -1,10 +1,10 @@
 ﻿using Application.DTO;
-using Domain.Entities;
+using Application.DTO.Travel;
 using MediatR;
 
 namespace Application.UseCases.Travels.EndsTravel;
 
-public class EndsTravelCommand : IRequest<Result<Travel>>
+public class EndsTravelCommand : IRequest<Result<TravelDTO>>
 {
     public required Guid VehicleId { get; set; }
     public int FinishMileage { get; set; }

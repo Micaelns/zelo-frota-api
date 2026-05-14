@@ -11,6 +11,8 @@ public class Destination() : Base
     public string Locality { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Uf { get; set; } = "SE";
+    private readonly List<Travel> _travels = [];
+    public IReadOnlyCollection<Travel> Travels => _travels;
 
     public static Destination CreateDestination(ZipCode zipCode, string? address, string? neighborhood,
                         string? locality, string city, UF uf)
@@ -28,5 +30,11 @@ public class Destination() : Base
             City = city,
             Uf = uf.ToString()
         };
+    }
+
+    override
+    public string ToString()
+    {
+        return $"{City},{Uf} CEP: {ZipCode}";
     }
 }

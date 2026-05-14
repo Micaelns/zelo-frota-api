@@ -27,9 +27,14 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
             entity.Property(t => t.Id)
                 .ValueGeneratedNever();
 
-            entity.HasOne<Vehicle>()
+            entity.HasOne(t => t.Vehicle)
                   .WithMany(v => v.Travels)
                   .HasForeignKey(t => t.VehicleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(t => t.Destination)
+                  .WithMany(v => v.Travels)
+                  .HasForeignKey(t => t.DestinationId)
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(t => new { t.VehicleId, t.End, t.Start });

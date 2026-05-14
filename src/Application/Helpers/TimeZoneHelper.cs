@@ -14,8 +14,11 @@ public static class TimeZoneHelper
         }
     }
 
-    public static DateTime ToSaoPaulo(DateTime utcDate)
+    public static DateTime? ToSaoPaulo(DateTime? utcDate)
     {
-        return TimeZoneInfo.ConvertTimeFromUtc(utcDate, SaoPaulo());
+        if (utcDate == null) return null;
+
+        var utc = DateTime.SpecifyKind( utcDate.Value, DateTimeKind.Utc);
+        return TimeZoneInfo.ConvertTimeFromUtc(utc, SaoPaulo());
     }
 }

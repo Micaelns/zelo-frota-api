@@ -1,15 +1,17 @@
 ﻿using Application.Contracts.Abstractions;
+using Application.Contracts.Abstractions.Travels.Query;
 using Application.Contracts.Events;
 using Application.DTO;
+using Application.DTO.Travel;
+using Application.Mappers;
 using Domain.Entities;
-using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Travels.EndsTravel;
 
-public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery travelQuery, IMessageProducer producer, ILogger<EndsTravelHandler> logger) : IRequestHandler<EndsTravelCommand, Result<Travel>>
+public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery travelQuery, IMessageProducer producer, ILogger<EndsTravelHandler> logger) : IRequestHandler<EndsTravelCommand, Result<TravelDTO>>
 {
     private readonly IVehicleRepository _repository = repository;
     private readonly ITravelQuery _travelQuery = travelQuery;
@@ -17,7 +19,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
     private readonly ILogger<EndsTravelHandler> _logger = logger;
 
 
-    public async Task<Result<Travel>> Handle(
+    public async Task<Result<TravelDTO>> Handle(
         EndsTravelCommand command,
         CancellationToken cancellationToken)
     {
@@ -28,7 +30,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
             if (vehicle is null)
             {
                 _logger.LogError("Veículo {@VehicleId} não encontrado", command.VehicleId);
-                return Result<Travel>.Failure("Veículo não encontrado");
+                return Result<TravelDTO>.Failure("Veículo não encontrado");
             }
 
             var travel = await _travelQuery.GetOpenTravelInVehicleAsync(command.VehicleId);
@@ -36,7 +38,7 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
             if (travel is null)
             {
                 _logger.LogError("Não existe viagem em andamento para {@VehicleId} ", command.VehicleId);
-                return Result<Travel>.Failure("Não existe viagem em andamento");
+                return Result<TravelDTO>.Failure("Não existe viagem em andamento");
             }
 
             vehicle.EndTravel(travel, command.FinishMileage, command.FuelQTD, command.WhenArrived);
@@ -45,12 +47,12 @@ public class EndsTravelHandler(IVehicleRepository repository, ITravelQuery trave
             await Notify(travel, command, cancellationToken);
 
             _logger.LogInformation("Viagem do veículo {@Plate} foi finalizado com sucesso.", vehicle.Plate);
-            return Result<Travel>.Success(travel);
+            return Result<TravelDTO>.Success(TravelMapper.ToTravelDTO(travel));
         }
         catch (Exception ex)
         {
             _logger.LogError("Erro no processo de finalizar viagem. {@command} {@error}", command, ex.Message);
-            return Result<Travel>.Failure(ex.Message);
+            return Result<TravelDTO>.Failure(ex.Message);
         }
     }
 

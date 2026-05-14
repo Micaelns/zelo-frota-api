@@ -1,7 +1,7 @@
 ﻿using Application.Contracts.Abstractions;
+using Application.Contracts.Abstractions.Travels.Query;
 using Application.Contracts.Events;
 using Application.DTO;
-using Domain.Interfaces.Query;
 using Domain.Interfaces.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;

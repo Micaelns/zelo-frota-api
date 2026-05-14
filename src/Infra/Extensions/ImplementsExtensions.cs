@@ -1,5 +1,5 @@
 ﻿using Application.Contracts.Abstractions;
-using Domain.Interfaces.Query;
+using Application.Contracts.Abstractions.Travels.Query;
 using Domain.Interfaces.Repository;
 using Infra.Data.Queries;
 using Infra.Data.Repositories;

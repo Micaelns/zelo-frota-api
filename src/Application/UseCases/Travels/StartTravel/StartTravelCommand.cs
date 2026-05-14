@@ -1,10 +1,10 @@
 ﻿using Application.DTO;
-using Domain.Entities;
+using Application.DTO.Travel;
 using MediatR;
 
 namespace Application.UseCases.Travels.StartTravel;
 
-public class StartTravelCommand : IRequest<Result<Travel>>
+public class StartTravelCommand : IRequest<Result<TravelDTO>>
 {
     public required Guid VehicleId { get; set; }
     public required Guid DestinationId { get; set; }
