@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.DTO.Travel;
+﻿namespace Application.DTO.Travel;
 
 public class TravelDTO
 {

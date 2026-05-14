@@ -3,7 +3,6 @@ using Application.DTO.Travel;
 using Domain.Entities;
 using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace Infra.Data.Queries;
 
@@ -43,7 +42,7 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
         skip = Math.Max(0, skip);
         take = Math.Clamp(take, 1, 1000);
 
-        return await _context.Travels
+        return await QueryTravelComplete()
             .AsNoTracking()
             .Where(element => element.VehicleId == vehicleId)
             .OrderByDescending(element => element.Start)
@@ -54,7 +53,7 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
 
     public async Task<IEnumerable<VehicleEconomyDto>> GetHankingVehicleEconomyAsync(int skip, int take = 10)
     {
-        return  await _context.Travels
+        return await _context.Travels
                 .AsNoTracking()
                 .Where(t => t.Autonomy.HasValue)
                 .GroupBy(t => new
