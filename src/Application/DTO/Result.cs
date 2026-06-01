@@ -8,21 +8,28 @@ public class Result<T>
     public string? Error { get; }
     public ErrorType? ErrorType { get; }
     public T? Value { get; } = default;
+    public Pagination? Pagination { get; }
 
-    private Result(bool success, T value, string? error, ErrorType? errorType) { 
+    private Result(bool success, T value, string? error, ErrorType? errorType, Pagination? pagination) { 
         IsSuccess = success;
         Value = value;
         Error = error;
         ErrorType = errorType;
+        Pagination = pagination;
     }
 
     public static Result<T> Success(T value)
     {
-        return new Result<T>(true, value, null, null);
+        return new Result<T>(true, value, null, null, null);
+    }
+
+    public static Result<T> Success(T value, Pagination pagination)
+    {
+        return new Result<T>(true, value, null, null, pagination);
     }
 
     public static Result<T> Failure(string error, ErrorType? errorType = ResultErrorType.Validation)
     {
-        return new Result<T>(false, default, error, errorType);
+        return new Result<T>(false, default, error, errorType, null);
     }
 }

@@ -17,10 +17,18 @@ public class ListVehicleTypeHandler(IVehicleTypeRepository repository, ILogger<L
     {
         try
         {
-            var vehicleTypeList = await _repository.AllAsync(query.Skip, query.Take);
+            var vehicleTypeList = await _repository.AllAsync(query.Page, query.Take);
+            var totalItems = await _repository.AllContAsync();
+            var pagination = new Pagination()
+            {
+                TotalItems = totalItems,
+                CurrentPage = query.Page,
+                TotalPages = (int)Math.Ceiling((double)totalItems / query.Take),
+                PerPage = query.Take
+            };
 
             _logger.LogInformation("Listagem de tipos de veículo com sucesso.");
-            return Result<List<VehicleType>>.Success(vehicleTypeList.ToList());
+            return Result<List<VehicleType>>.Success(vehicleTypeList.ToList(), pagination);
         }
         catch (Exception ex)
         {

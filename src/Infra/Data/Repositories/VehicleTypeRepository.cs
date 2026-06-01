@@ -9,8 +9,16 @@ public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRep
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-    public async Task<IEnumerable<VehicleType>> AllAsync(int skip, int take = 10)
+
+    public async Task<int> AllContAsync()
     {
+        return await _context.VehicleTypes
+                    .CountAsync();
+    }
+
+    public async Task<IEnumerable<VehicleType>> AllAsync(int page, int take = 10)
+    {
+        var skip = (page - 1) * take;
         return await _context.VehicleTypes
                     .OrderByDescending(element => element.Name)
                     .Skip(skip)

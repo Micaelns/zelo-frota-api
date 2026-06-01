@@ -28,6 +28,13 @@ builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKey"]);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirLocalhost", 
+        policy => policy.WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+});
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -38,6 +45,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("PermitirLocalhost");
 
 app.UseHttpsRedirection();
 
