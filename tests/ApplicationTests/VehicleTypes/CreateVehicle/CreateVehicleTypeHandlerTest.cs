@@ -23,7 +23,7 @@ public class CreateVehicleTypeHandlerTest
     public async Task Handler_WithAnyErrorToSave_ReturnResultFailure()
     {
         var command = new CreateVehicleTypeCommand() { Name = "teste type" };
-        var createVehicleTypeHandler = new CreateVehicleTypeHandler(_mockRepository.Object, _loggerMock.Object); 
+        var createVehicleTypeHandler = new CreateVehicleTypeHandler(_mockRepository.Object, _loggerMock.Object);
         _mockRepository.Setup(repo => repo.AddAsync(It.IsAny<VehicleType>())).ThrowsAsync(new Exception("Erro inesperado"));
 
         var result = await createVehicleTypeHandler.Handle(command, _cancellationToken);
@@ -35,9 +35,9 @@ public class CreateVehicleTypeHandlerTest
     [Fact]
     public async Task Handler_WithValidParams_ReturnResultSuccess()
     {
-        var command = new CreateVehicleTypeCommand() { Name="teste type" };
+        var command = new CreateVehicleTypeCommand() { Name = "teste type" };
         var createVehicleTypeHandler = new CreateVehicleTypeHandler(_mockRepository.Object, _loggerMock.Object);
-        
+
         var result = await createVehicleTypeHandler.Handle(command, _cancellationToken);
 
         Assert.Null(result.Error);

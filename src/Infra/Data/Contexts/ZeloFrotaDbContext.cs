@@ -15,18 +15,20 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
         modelBuilder.Entity<Destination>(entity =>
         {
             entity.HasKey(v => v.Id);
+            entity.HasQueryFilter(x => x.Deleted == null);
         });
 
         modelBuilder.Entity<Travel>(entity =>
         {
             entity.HasKey(v => v.Id);
+            entity.HasQueryFilter(x => x.Deleted == null);
             entity.Property(e => e.VehicleId)
             .IsRequired();
             entity.Property(e => e.DestinationId)
                 .IsRequired();
             entity.Property(t => t.Id)
                 .ValueGeneratedNever();
-
+            
             entity.HasOne(t => t.Vehicle)
                   .WithMany(v => v.Travels)
                   .HasForeignKey(t => t.VehicleId)
@@ -43,7 +45,7 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.HasKey(v => v.Id);
-
+            entity.HasQueryFilter(x => x.Deleted == null);
             entity.Property(v => v.Plate)
                 .IsRequired()
                 .HasMaxLength(10);
@@ -56,6 +58,7 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
         modelBuilder.Entity<VehicleType>(entity =>
         {
             entity.HasKey(v => v.Id);
+            entity.HasQueryFilter(x => x.Deleted == null);
         });
 
     }

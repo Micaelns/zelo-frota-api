@@ -22,7 +22,7 @@ public class ListVehicleTypeHandlerTest
     [Fact]
     public async Task Handler_WithAnyErrorToList_ReturnResultFailure()
     {
-        var query = new ListVehicleTypeQuery() { Skip = 0, Take = 10 };
+        var query = new ListVehicleTypeQuery() { Page = 1, Take = 10 };
         var listVehicleTypeHandler = new ListVehicleTypeHandler(_mockRepository.Object, _loggerMock.Object);
         _mockRepository.Setup(repo => repo.AllAsync(It.IsAny<int>(), It.IsAny<int>())).ThrowsAsync(new Exception("Erro inesperado"));
 
@@ -35,7 +35,7 @@ public class ListVehicleTypeHandlerTest
     [Fact]
     public async Task Handler_WithValidParams_ReturnResultSuccess()
     {
-        var query = new ListVehicleTypeQuery() { Skip = 0, Take = 10 };
+        var query = new ListVehicleTypeQuery() { Page = 1, Take = 10 };
         var listVehicleHandler = new ListVehicleTypeHandler(_mockRepository.Object, _loggerMock.Object);
         var validVehicleTypes = new List<VehicleType>();
         _mockRepository.Setup(repo => repo.AllAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(validVehicleTypes);

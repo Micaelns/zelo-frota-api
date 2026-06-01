@@ -18,6 +18,11 @@ public class Result<T>
         Pagination = pagination;
     }
 
+        public static Result<T> Success()
+        {
+            return new Result<T>(true, default, null, null, null);
+        }
+
     public static Result<T> Success(T value)
     {
         return new Result<T>(true, value, null, null, null);

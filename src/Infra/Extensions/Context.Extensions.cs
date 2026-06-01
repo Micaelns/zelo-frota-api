@@ -14,8 +14,7 @@ public static class RegisterContext
         {
             options.UseSqlServer(sqlQueryString);
             options.AddInterceptors(sp.GetRequiredService<SlowQueryInterceptor>());
-    }
-        );
+        });
         return services;
     }
 }

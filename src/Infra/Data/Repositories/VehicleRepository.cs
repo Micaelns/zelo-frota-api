@@ -46,4 +46,9 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
                     .Where(v => v.Plate == plate)
                     .FirstOrDefaultAsync();
     }
+
+    public Task DeleteLogicalAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

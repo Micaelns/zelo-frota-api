@@ -41,4 +41,9 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
                     .Where(v => v.ZipCode == zipCode)
                     .FirstOrDefaultAsync();
     }
+
+    public Task DeleteLogicalAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

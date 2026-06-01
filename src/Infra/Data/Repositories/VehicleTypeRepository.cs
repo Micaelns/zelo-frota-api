@@ -23,7 +23,7 @@ public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRep
                     .OrderByDescending(element => element.Name)
                     .Skip(skip)
                     .Take(take)
-                    .ToListAsync(); 
+                    .ToListAsync();
     }
 
     public async Task<VehicleType?> FindAsync(Guid id)
@@ -41,5 +41,15 @@ public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRep
     {
         await _context.VehicleTypes.AddAsync(value);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteLogicalAsync(Guid id)
+    {
+        await _context.VehicleTypes
+            .Where(x => x.Id == id)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(
+                    x => x.Deleted,
+                    DateTime.UtcNow));
     }
 }
