@@ -7,7 +7,6 @@ using Application.UseCases.VehicleTypes.ShowVehicleType;
 using Application.UseCases.VehicleTypes.UpdateVehicleType;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Api.Controllers;
 

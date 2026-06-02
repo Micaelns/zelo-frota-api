@@ -1,6 +1,4 @@
-﻿using Application.DTO.Vehicle;
-using Azure;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Interfaces.Repository;
 using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
