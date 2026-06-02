@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Application.DTO.Vehicle;
+using Azure;
+using Domain.Entities;
 using Domain.Interfaces.Repository;
 using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +11,20 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-    public async Task<IEnumerable<Vehicle>> AllAsync(int skip, int take = 10)
+
+    public async Task<int> AllContAsync()
     {
         return await _context.Vehicles
+                    .CountAsync();
+    }
+    public async Task<IEnumerable<Vehicle>> AllAsync(int page, int take = 10)
+    {
+        var skip = (page - 1) * take;
+        return await _context.Vehicles
+                    .AsNoTracking()
+                    .Include("VehicleType")
                     .OrderByDescending(element => element.Plate)
+                    .ThenBy(x => x.Id) // se tiver mais de uma Plate então por Id sempre 
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Azure;
+using Domain.Entities;
 using Domain.Interfaces.Repository;
 using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,15 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-    public async Task<IEnumerable<Destination>> AllAsync(int skip, int take = 10)
+    public async Task<int> AllContAsync()
     {
+        return await _context.Destinations
+                    .CountAsync();
+    }
+
+    public async Task<IEnumerable<Destination>> AllAsync(int page, int take = 10)
+    {
+        var skip = (page - 1) * take;
         return await _context.Destinations
                     .OrderByDescending(element => element.ZipCode)
                     .Skip(skip)
@@ -46,4 +54,5 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
     {
         throw new NotImplementedException();
     }
+
 }

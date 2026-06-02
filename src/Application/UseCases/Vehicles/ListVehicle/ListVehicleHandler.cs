@@ -17,10 +17,12 @@ public class ListVehicleHandler(IVehicleRepository repository, ILogger<ListVehic
     {
         try
         {
-            var vehicleList = await _repository.AllAsync(command.Skip, command.Take);
+            var vehicleList = await _repository.AllAsync(command.Page, command.Take);
+            var totalItems = await _repository.AllContAsync();
+            var pagination = new Pagination(totalItems, command.Page, command.Take);
 
             _logger.LogInformation("Listagem de viagens foi finalizado com sucesso.");
-            return Result<List<Vehicle>>.Success(vehicleList.ToList());
+            return Result<List<Vehicle>>.Success(vehicleList.ToList(), pagination);
         }
         catch (Exception ex)
         {

@@ -16,10 +16,13 @@ public class ListDestinationHandler(IDestinationRepository repository, ILogger<L
     {
         try
         {
-            var DestinationList = await _repository.AllAsync(command.Skip, command.Take);
+            var DestinationList = await _repository.AllAsync(command.Page, command.Take);
+            var totalItems = await _repository.AllContAsync();
+            var pagination = new Pagination(totalItems, command.Page, command.Take);
+
             _logger.LogInformation("Sucesso na listagem dos destinos. {@command}", command);
 
-            return Result<List<Destination>>.Success(DestinationList.ToList());
+            return Result<List<Destination>>.Success(DestinationList.ToList(), pagination);
         }
         catch (Exception ex)
         {
