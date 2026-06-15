@@ -27,10 +27,13 @@ public class ListTravelHandler(ITravelQuery travelQuery, IVehicleRepository vehi
                 return Result<List<TravelDTO>>.Failure("Veículo não encontrado");
             }
 
-            var vehicleTravelList = await _travelQuery.GetTravelsByVehicleAsync(command.VehicleId,command.Skip, command.Take);
+            var vehicleTravelList = await _travelQuery.GetTravelsByVehicleAsync(command.VehicleId,command.Page, command.Take);
+            var totalItems = await _travelQuery.GetTravelsByVehicleContAsync(command.VehicleId);
+            var pagination = new Pagination(totalItems, command.Page, command.Take);
+
 
             _logger.LogInformation("Lista de viagens do veículo {@Plate} foi finalizada com sucesso.", vehicle.Plate);
-            return Result<List<TravelDTO>>.Success(TravelMapper.ToListTravelDTO(vehicleTravelList.ToList()));
+            return Result<List<TravelDTO>>.Success(TravelMapper.ToListTravelDTO(vehicleTravelList.ToList()), pagination);
         }
         catch (Exception ex)
         {

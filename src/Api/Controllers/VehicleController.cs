@@ -3,6 +3,7 @@ using Api.Requests.Vehicles;
 using Application.UseCases.Travels.EndsTravel;
 using Application.UseCases.Travels.ListTravel;
 using Application.UseCases.Travels.MonthReport;
+using Application.UseCases.Travels.ShowTravel;
 using Application.UseCases.Travels.StartTravel;
 using Application.UseCases.Vehicles.CreateVehicle;
 using Application.UseCases.Vehicles.EconomyVehicleRanking;
@@ -97,22 +98,43 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
     [Route("{vehicleId}/travels")]
     public async Task<IActionResult> GetStartTravel([FromRoute] Guid vehicleId, [FromQuery] PaginateRequest request)
     {
-        var command = new ListTravelQuery
+        var query = new ListTravelQuery
         {
             VehicleId = vehicleId,
-            Skip = request.Skip,
+            Page = request.Page,
             Take = request.Take
         };
 
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(query);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao listar viagens. BadRequest: {@command} : {@error}", command, result.Error);
+            _logger.LogWarning("Problema ao listar viagens de um veiculo. BadRequest: {@query} : {@error}", query, result.Error);
             return BadRequest(result.Error);
         }
 
         _logger.LogInformation("Sucesso ao listar viagens.");
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("travels/{travelId}")]
+    public async Task<IActionResult> GetTravel([FromRoute] Guid travelId)
+    {
+        var query = new ShowTravelQuery
+        {
+            Id = travelId
+        };
+
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Problema ao encontra viagem. BadRequest: {@query} : {@error}", query, result.Error);
+            return BadRequest(result.Error);
+        }
+
+        _logger.LogInformation("Sucesso ao encontrar viagem.");
         return Ok(result);
     }
 

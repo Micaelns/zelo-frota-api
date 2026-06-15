@@ -6,7 +6,7 @@ namespace Application.UseCases.Travels.ListTravel;
 
 public class ListTravelQuery : IRequest<Result<List<TravelDTO>>>
 {
-    public required Guid VehicleId { get; set; }
-    public int Skip { get; set; } = 0;
+    public Guid VehicleId { get; set; }
+    public int Page { get; set; } = 1;
     public int Take { get; set; } = 10;
 }
