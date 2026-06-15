@@ -1,0 +1,171 @@
+name: Zelo Frota Api Pipeline
+
+on:
+  push:
+    branches:
+      - "release-*"
+
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release para promover (ex: 1.2.0)"
+        required: true
+        type: string
+
+env:
+  IMAGE_NAME: zelofrotaapi
+  ACR_NAME: ccrZeloFrotaBackendHlg
+  ACR_LOGIN_SERVER: ccrzelofrotabackendhlg-fmhmgrevb7gxa4hv.azurecr.io
+
+jobs:
+  ################################################################################
+  # BUILD + HLG
+  ################################################################################
+
+  build-and-deploy-hlg:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Tests units
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login ACR
+        run: |
+          az acr login \
+            --name ${{ env.ACR_NAME }}
+
+      - name: Set TAG
+        run: |
+          TAG=$(echo "${{ github.ref_name }}" | sed 's#release-##')
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.TAG}} \
+            -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest \
+            .
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Deploy HLG
+        run: |
+          echo "Deploy HLG"
+
+################################################################################
+  # PROMOTION PRD
+  ################################################################################
+
+  deploy-prd:
+    if: github.event_name == 'workflow_dispatch'
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: PRD
+
+    steps:
+      - name: Login Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login ACR
+        run: |
+          az acr login \
+            --name ${{ secrets.ACR_NAME }}
+
+      - name: Set Variables
+        run: |
+
+          echo "RELEASE=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+
+          echo "VERSION=${{ github.event.inputs.tag }}" \
+            | sed 's/release-/v/' \
+            >> $GITHUB_ENV
+
+      ###########################################################
+
+      - name: Pull Current Latest
+        run: |
+          docker pull \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest || true
+
+      - name: Save latest as latest-stable
+        run: |
+
+          docker tag \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest-stable || true
+
+          docker push \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest-stable || true
+
+      ###########################################################
+
+      - name: Pull Release Image
+        run: |
+
+          docker pull \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE }}
+
+      ###########################################################
+
+      - name: Create Official Version
+        run: |
+
+          docker tag \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE }} \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
+      - name: Update latest
+        run: |
+
+          docker tag \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.RELEASE }} \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+      ###########################################################
+
+      - name: Push Official Version
+        run: |
+
+          docker push \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
+      - name: Push latest
+        run: |
+
+          docker push \
+          ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+
+      ###########################################################
+
+      - name: Deploy PRD
+        run: |
+          echo "Deploy PRD"
+          # Azure WebApp / ContainerApp
+          # será configurado posteriormente
+
