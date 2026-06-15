@@ -30,8 +30,10 @@ builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKe
 
 builder.Services.AddCors(options =>
 {
+    var origins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
+
     options.AddPolicy("PermitirLocalhost", 
-        policy => policy.WithOrigins("http://localhost:5173")
+        policy => policy.WithOrigins(origins)
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 });
