@@ -38,6 +38,6 @@ public class VehicleTest
 
         var excecao = Assert.Throws<ArgumentException>(() => vehicle.NewMileage(assertNewMiliage));
 
-        Assert.Equal("Quilometragem inválida", excecao.Message);
+        Assert.Equal("Quilometragem invalida", excecao.Message);
     }
 }

@@ -26,7 +26,7 @@ public class Vehicle : Base
     {
         if (mileage < 0 || mileage < Mileage)
         {
-            throw new ArgumentException("Quilometragem inválida");
+            throw new ArgumentException("Quilometragem invalida");
         }
         Mileage = mileage;
     }
