@@ -49,6 +49,15 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("PermitirLocalhost");
 
+app.MapGet("/", (IHostEnvironment env) =>
+{
+    return Results.Ok(new
+    {
+        application = "Zelo Frota Api",
+        environment = env.EnvironmentName,
+        timestamp = DateTime.UtcNow
+    });
+});
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
