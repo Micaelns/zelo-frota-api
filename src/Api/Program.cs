@@ -39,6 +39,8 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
+Console.WriteLine("*** Configurando Aplicação: ");
+
 app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
