@@ -87,4 +87,45 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
                 .Take(take)
                 .ToListAsync();
     }
+
+    public async Task<IEnumerable<VehicleMileageRankingDTO>> GetMileageHankingAsync(bool orderByDescending, int skip, int take = 10)
+    {
+        var sqlQuery = _context.Travels
+                .AsNoTracking()
+                .Where(t => t.FinishedMileage.HasValue && t.StartedMileage!.HasValue)
+                .GroupBy(t => new
+                {
+                    t.VehicleId,
+                    t.Vehicle.Plate,
+                    VehicleType = t.Vehicle.VehicleType.Name
+                })
+                .Select(group => new VehicleMileageRankingDTO
+                {
+                    VehicleId = group.Key.VehicleId,
+
+                    VehiclePlate = group.Key.Plate,
+
+                    VehicleType = group.Key.VehicleType,
+
+                    TotalMileage = group.Sum(t =>
+                        (int)t.FinishedMileage!.Value - (int)t.StartedMileage!.Value),
+
+                    TotalTravels = group.Count()
+                });
+
+        if (orderByDescending)
+        {
+            sqlQuery = sqlQuery.OrderByDescending(x => x.TotalMileage);
+        }
+        else
+        {
+            sqlQuery = sqlQuery.OrderBy(x => x.TotalMileage);
+        }
+
+
+        return await sqlQuery
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+    }
 }

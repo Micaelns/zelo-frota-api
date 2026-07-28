@@ -8,6 +8,7 @@ using Application.UseCases.Travels.StartTravel;
 using Application.UseCases.Vehicles.CreateVehicle;
 using Application.UseCases.Vehicles.EconomyVehicleRanking;
 using Application.UseCases.Vehicles.ListVehicle;
+using Application.UseCases.Vehicles.MileageRanking;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -138,9 +139,9 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
         return Ok(result);
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("hanking/economy")]
-    public async Task<IActionResult> GetReportsTravel(EconomyRankingQuery query)
+    public async Task<IActionResult> GetHankingEconomy([FromQuery] EconomyRankingQuery query)
     {
         var result = await _mediator.Send(query);
 
@@ -152,6 +153,23 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
         }
 
         _logger.LogInformation("Sucesso ao solicitar ranking de veiculos mais econômicos.");
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("hanking/mileage")]
+    public async Task<IActionResult> GetHankingMilage([FromQuery] MileageRankingQuery query)
+    {
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Problema ao Solicitar ranking de quilometragem percorrida. BadRequest: {@query} : {@error}", query, result.Error);
+
+            return BadRequest(result.Error);
+        }
+
+        _logger.LogInformation("Sucesso ao solicitar ranking de quilometragem percorrida.");
         return Ok(result);
     }
 
