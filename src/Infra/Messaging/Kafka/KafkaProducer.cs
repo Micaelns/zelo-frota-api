@@ -50,7 +50,7 @@ public class KafkaProducer : IMessageProducer
     {
         if (_producer is null)
         {
-            _logger.LogInformation("O kafka está iniabilitado no momento");
+            _logger.LogInformation("O kafka está inabilitado no momento");
             return;
         }
 
