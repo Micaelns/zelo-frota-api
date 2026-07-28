@@ -1,4 +1,5 @@
 using Infra.Extensions;
+using Serilog.Sinks.Grafana.Loki;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,9 +8,11 @@ builder.Host.UseSerilog((context, config) =>
 {
     config
         .ReadFrom.Configuration(context.Configuration)
+        .Enrich.WithProperty("service_name", "ZeloFrota.Api")
         .WriteTo.Console(
             outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"
-        );
+        )
+        .WriteTo.GrafanaLoki("http://localhost:3100", labels: [new LokiLabel("service_name", "ZeloFrota.Api")]);
 });
 
 builder.Services.Configure<Infra.Messaging.Kafka.KafkaSettings>(
@@ -18,6 +21,8 @@ builder.Services.Configure<Infra.Messaging.Kafka.KafkaSettings>(
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddOpenTelemetry(builder.Configuration);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,9 +44,9 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
-Console.WriteLine("*** Configurando Aplicação: ");
+Console.WriteLine("*** Iniciando configurações da Aplicação: ");
 
-app.UseSerilogRequestLogging();
+//app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
