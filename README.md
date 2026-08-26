@@ -20,3 +20,10 @@ POC de uma API REST para gestão de frota de caminhões
 		cd src/Infra
 		dotnet-ef database update --project Infra.csproj --startup-project ../Api/Api.csproj
 
+- Rodar Seeds
+
+		cd src/Api
+		dotnet run -- seed:create    (cria seeds)
+		dotnet run -- seed:remove    (remove seeds)
+
+

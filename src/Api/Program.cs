@@ -1,6 +1,8 @@
+using Infra.Data.Commands;
+using Infra.Data.Contexts;
 using Infra.Extensions;
-using Serilog.Sinks.Grafana.Loki;
 using Serilog;
+using Serilog.Sinks.Grafana.Loki;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,26 @@ var app = builder.Build();
 
 Console.WriteLine("*** Iniciando configurações da Aplicação: ");
 
+if (args.Length > 0)
+{
+    using var scope = app.Services.CreateScope();
+
+    var context = scope.ServiceProvider
+        .GetRequiredService<ZeloFrotaDbContext>();
+
+    switch (args[0])
+    {
+        case "seed:create":
+            Console.WriteLine("- Executando Seeds: ");
+            await CreateSeedCommand.ExecuteAsync(context);
+            return;
+
+        case "seed:remove":
+            Console.WriteLine("- Removendo Seeds: ");
+            await RemoveSeedCommand.ExecuteAsync(context);
+            return;
+    }
+}
 //app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
