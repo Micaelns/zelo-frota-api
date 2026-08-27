@@ -34,7 +34,7 @@ builder.Services.AddContexts(builder.Configuration["connectionStringSqlServer"])
 builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKey"]);
-builder.Services.RegistryAuthenticRefit(builder.Configuration["AuthenticURL"]);
+builder.Services.RegistryAuthenticRefit(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {

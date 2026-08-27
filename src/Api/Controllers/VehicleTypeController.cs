@@ -1,5 +1,6 @@
 ﻿using Api.Requests.VehicleTypes;
 using Application.DTO;
+using Application.UseCases.Auth.Logon;
 using Application.UseCases.VehicleTypes.CreateVehicleType;
 using Application.UseCases.VehicleTypes.DeleteVehicleType;
 using Application.UseCases.VehicleTypes.ListVehicleType;
@@ -44,9 +45,9 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
             _logger.LogWarning("Problema ao mostrar de tipo de veículo. {@command} {@error}", query, result.Error);
             if (result.ErrorType == ErrorType.Validation)
             {
-                return StatusCode(400, result);
+                return BadRequest(result);
             }
-            return BadRequest(result);
+            return StatusCode(500, result);
         }
 
         _logger.LogInformation("Sucesso de mostrar de tipo de veículo. Result: {@result}", result.Value);
@@ -63,9 +64,9 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
             _logger.LogWarning("Problema na Criação de tipo de veículo. {@command} {@error}", command, result.Error);
             if (result.ErrorType == ErrorType.Validation)
             {
-                return StatusCode(400, result);
+                return BadRequest(result);
             }
-            return BadRequest(result);
+            return StatusCode(500, result);
         }
 
         _logger.LogInformation("Sucesso na criação de tipo de veículo. Result: {@result}", result.Value);
@@ -90,9 +91,9 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
             _logger.LogWarning("Problema ao editar tipo de veículo. {@command} {@error}", command, result.Error);
             if (result.ErrorType == ErrorType.Validation)
             {
-                return StatusCode(400, result);
+                return BadRequest(result);
             }
-            return BadRequest(result);
+            return StatusCode(500,result);
         }
 
         _logger.LogInformation("Sucesso ao editar tipo de veículo. Result: {@result}", result.Value);
@@ -112,13 +113,14 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
             _logger.LogWarning("Problema ao deletar tipo de veículo. {@command} {@error}", command, result.Error);
             if (result.ErrorType == ErrorType.Validation)
             {
-                return StatusCode(400, result);
+                return BadRequest(result);
             }
-            return BadRequest(result);
+            return StatusCode(500, result);
         }
 
         _logger.LogInformation("Sucesso ao deletar tipo de veículo. Result: {@result}", result.Value);
 
         return Ok();
     }
+
 }

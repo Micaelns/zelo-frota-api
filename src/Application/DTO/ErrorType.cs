@@ -4,5 +4,6 @@ public enum ErrorType
 {
     Validation,
     ExternalServiceUnavailable,
+    AccessUnauthorized,
     Internal
 }
