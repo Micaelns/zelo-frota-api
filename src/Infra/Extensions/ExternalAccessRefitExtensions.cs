@@ -4,7 +4,6 @@ using Infra.External.Authentic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Infra.Extensions;
 
@@ -25,8 +24,15 @@ public static class ExternalAccessRefitExtensions
             {
                 c.BaseAddress = new Uri(baseUrl);
             });
+        services.AddRefitGeneratedClient<IRoleApi>()
+            .ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri(baseUrl);
+            });
 
         services.AddScoped<IAuthentic, AuthenticApiAdapter>();
+        services.AddScoped<IRules, RoleApiAdapter>();
+        
         return services;
     }
 

@@ -55,6 +55,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
     }
 
     [HttpPost]
+   // [Authorize(Policy = Policies.CreateVehicleType)]
     public async Task<IActionResult> Create(CreateVehicleTypeCommand command)
     {
         var result = await _mediator.Send(command);

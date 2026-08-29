@@ -5,5 +5,6 @@ public enum ErrorType
     Validation,
     ExternalServiceUnavailable,
     AccessUnauthorized,
-    Internal
+    Internal,
+    NotFound
 }
