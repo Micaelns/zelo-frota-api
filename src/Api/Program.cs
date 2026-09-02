@@ -1,6 +1,8 @@
+using Infra.Cache.Mongo.context;
 using Infra.Data.Commands;
 using Infra.Data.Contexts;
 using Infra.Extensions;
+using Infra.Messaging.Kafka;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
 
@@ -17,7 +19,7 @@ builder.Host.UseSerilog((context, config) =>
         .WriteTo.GrafanaLoki("http://localhost:3100", labels: [new LokiLabel("service_name", "ZeloFrota.Api")]);
 });
 
-builder.Services.Configure<Infra.Messaging.Kafka.KafkaSettings>(
+builder.Services.Configure<KafkaSettings>(
     builder.Configuration.GetSection("Kafka")
 );
 // Add services to the container.
@@ -35,6 +37,7 @@ builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKey"]);
 builder.Services.RegistryAuthenticRefit(builder.Configuration);
+builder.Services.RegisterMongoCache(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
@@ -68,6 +71,16 @@ if (args.Length > 0)
             await RemoveSeedCommand.ExecuteAsync(context);
             return;
     }
+}
+
+if (builder.Configuration["Cache:Provider"] == "Mongo")
+{
+    using var scope = app.Services.CreateScope();
+
+    var context = scope.ServiceProvider
+        .GetRequiredService<AuthorizationMongoContext>();
+
+    await context.CreateIndexesAsync();
 }
 //app.UseSerilogRequestLogging();
 

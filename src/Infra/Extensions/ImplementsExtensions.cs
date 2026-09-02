@@ -22,7 +22,7 @@ public static class ImplementsExtensions
     }
 
     public static IServiceCollection ImplementsServices(this IServiceCollection services)
-    { 
+    {
         services.AddSingleton<IMessageProducer, KafkaProducer>();
         services.AddSingleton<IEventTopicMapper, EventTopicMapper>();
 

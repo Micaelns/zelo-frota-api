@@ -31,7 +31,7 @@ public static class ExternalAccessRefitExtensions
             });
 
         services.AddScoped<IAuthentic, AuthenticApiAdapter>();
-        services.AddScoped<IRules, RoleApiAdapter>();
+        services.AddSingleton<IRoles, RoleApiAdapter>();
         
         return services;
     }
