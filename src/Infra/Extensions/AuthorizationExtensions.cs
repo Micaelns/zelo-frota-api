@@ -20,7 +20,7 @@ public static class AuthorizationExtensions
                 options.TokenValidationParameters = new()
                 {
                     ValidateIssuer = false,
-                    ValidateAudience = false,
+                    ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
@@ -31,6 +31,9 @@ public static class AuthorizationExtensions
                         Encoding.UTF8.GetBytes(key))
                 };
             });
+
+
+        //services.AddAppAuthorization();
 
         return services;
     }

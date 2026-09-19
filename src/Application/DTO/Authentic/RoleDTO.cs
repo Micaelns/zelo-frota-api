@@ -1,8 +1,7 @@
-﻿namespace Application.DTO.Authentic
+﻿namespace Application.DTO.Authentic;
+
+public class RoleDTO
 {
-    public class RoleDTO
-    {
-        public string Name { get; set; } = string.Empty; 
-        public required List<string> Permissions { get; set; }
-    }
+    public string Name { get; set; } = string.Empty; 
+    public required List<string> Permissions { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Contracts.Abstractions;
 using Application.Contracts.Abstractions.Travels.Query;
+using Application.Security;
 using Domain.Interfaces.Repository;
 using Infra.Data.Queries;
 using Infra.Data.Repositories;
@@ -25,6 +26,7 @@ public static class ImplementsExtensions
     {
         services.AddSingleton<IMessageProducer, KafkaProducer>();
         services.AddSingleton<IEventTopicMapper, EventTopicMapper>();
+        services.AddSingleton<IPermissionAuthorization, PermissionAuthorization>();
 
         return services;
     }

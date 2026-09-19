@@ -1,8 +1,11 @@
+using Api.Handlers;
+using Api.Providers;
 using Infra.Cache.Mongo.context;
 using Infra.Data.Commands;
 using Infra.Data.Contexts;
 using Infra.Extensions;
 using Infra.Messaging.Kafka;
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
 
@@ -37,6 +40,11 @@ builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKey"]);
 builder.Services.RegistryAuthenticRefit(builder.Configuration);
+builder.Services.AddInfrastructureJWT(builder.Configuration);
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler,CustomAuthorizationMiddlewareResultHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider,PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler,PermissionAuthorizationHandler>();
 builder.Services.RegisterMongoCache(builder.Configuration);
 
 builder.Services.AddCors(options =>
@@ -103,6 +111,7 @@ app.MapGet("/", (IHostEnvironment env) =>
 });
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

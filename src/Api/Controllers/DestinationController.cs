@@ -1,6 +1,8 @@
-﻿using Application.UseCases.Destinations.CreateDestination;
+﻿using Application.Security;
+using Application.UseCases.Destinations.CreateDestination;
 using Application.UseCases.Destinations.ListDestination;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -13,6 +15,7 @@ public class DestinationController(IMediator mediator, ILogger<DestinationContro
     private readonly ILogger<DestinationController> _logger = logger;
 
     [HttpGet]
+    [Authorize(Policy = Permission.ListDestination)]
     public async Task<IActionResult> Index([FromQuery] ListDestinationQuery query)
     {
         var result = await _mediator.Send(query);
@@ -28,6 +31,7 @@ public class DestinationController(IMediator mediator, ILogger<DestinationContro
     }
 
     [HttpPost]
+    [Authorize(Policy = Permission.CreateDestination)]
     public async Task<IActionResult> Create(CreateDestinationCommand command)
     {
         var result = await _mediator.Send(command);

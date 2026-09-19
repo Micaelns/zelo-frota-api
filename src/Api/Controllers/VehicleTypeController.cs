@@ -1,12 +1,13 @@
 ﻿using Api.Requests.VehicleTypes;
 using Application.DTO;
-using Application.UseCases.Auth.Logon;
+using Application.Security;
 using Application.UseCases.VehicleTypes.CreateVehicleType;
 using Application.UseCases.VehicleTypes.DeleteVehicleType;
 using Application.UseCases.VehicleTypes.ListVehicleType;
 using Application.UseCases.VehicleTypes.ShowVehicleType;
 using Application.UseCases.VehicleTypes.UpdateVehicleType;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -19,6 +20,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
     private readonly ILogger<VehicleTypeController> _logger = logger;
 
     [HttpGet]
+    [Authorize(Policy = Permission.ListVehicleType)]
     public async Task<IActionResult> Index([FromQuery] ListVehicleTypeQuery query)
     {
         var result = await _mediator.Send(query);
@@ -35,6 +37,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
     [HttpGet]
     [Route("{id}")]
+    [Authorize(Policy = Permission.FindVehicleType)]
     public async Task<IActionResult> Show([FromRoute] Guid id)
     {
         var query = new ShowVehicleTypeQuery() { Id = id };
@@ -55,7 +58,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
     }
 
     [HttpPost]
-   // [Authorize(Policy = Policies.CreateVehicleType)]
+    [Authorize(Policy = Permission.CreateVehicleType)]
     public async Task<IActionResult> Create(CreateVehicleTypeCommand command)
     {
         var result = await _mediator.Send(command);
@@ -77,6 +80,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
     [HttpPut]
     [Route("{id}")]
+    [Authorize(Policy = Permission.UpdateVehicleType)]
     public async Task<IActionResult> Update([FromRoute] Guid id, VehicleTypeRequest request)
     {
         var command = new UpdateVehicleTypeCommand()
@@ -104,6 +108,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
     [HttpDelete]
     [Route("{id}")]
+    [Authorize(Policy = Permission.DeleteVehicleType)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         var command = new DeleteVehicleTypeCommand() { Id = id };
@@ -123,5 +128,4 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
         return Ok();
     }
-
 }
