@@ -19,8 +19,8 @@ public static class AuthorizationExtensions
             {
                 options.TokenValidationParameters = new()
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
@@ -31,28 +31,6 @@ public static class AuthorizationExtensions
                         Encoding.UTF8.GetBytes(key))
                 };
             });
-
-
-        //services.AddAppAuthorization();
-
-        return services;
-    }
-
-    public static IServiceCollection AddAppAuthorization(this IServiceCollection services)
-    {
-        //pegar dados do banco
-        //var policyRoles = PolicyRoleStore.LoadFromDb();
-        //var permission = new IRoleApi();
-        //var result = await permission.PermissionsBySoftwareAsync();
-
-        //// Ex: [("CreateUser", ["Admin", "Finance"]), ("ManageUser", ["Admin"]), ...]
-
-        //var builder = services.AddAuthorizationBuilder();
-
-        //foreach (var (policyName, roles) in policyRoles)
-        //{
-        //    builder.AddPolicy(policyName, p => p.RequireRole(roles.ToArray()));
-        //}
 
         return services;
     }

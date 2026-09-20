@@ -2,6 +2,7 @@
 using Application.Contracts.Abstractions.Cache;
 using Application.DTO;
 using Application.DTO.Authentic;
+using Infra.Cache;
 using Infra.External.Authentic;
 using Microsoft.Extensions.Options;
 using Refit;
@@ -9,9 +10,10 @@ using System.Net;
 
 namespace Infra.Adapters.Authentic;
 
-public class RoleApiAdapter(IRoleApi roleApi, IRoleCache roleCache, IUserRoleCache userRoleCache, IOptions<AuthenticSettings> options) : IRoles
+public class RoleApiAdapter(IRoleApi roleApi, IRoleCache roleCache, IUserRoleCache userRoleCache, IOptions<AuthenticSettings> options, IOptions<CacheSettings> optionsCache) : IRoles
 {
     private readonly AuthenticSettings _settings = options.Value;
+    private readonly CacheSettings _cacheConfig = optionsCache.Value;
     private readonly IRoleApi _roleApi = roleApi;
     private readonly IRoleCache _roleCache = roleCache;
     private readonly IUserRoleCache _userRoleCache = userRoleCache;
@@ -26,7 +28,7 @@ public class RoleApiAdapter(IRoleApi roleApi, IRoleCache roleCache, IUserRoleCac
                 return Result<List<RoleDTO>>.Success([..dataCache]);
             }
             var roles = await _roleApi.RolesAsync(_settings.SoftwareId);
-            await _roleCache.SetAsync(roles, TimeSpan.FromMinutes(1));
+            await _roleCache.SetAsync(roles, TimeSpan.FromHours(_cacheConfig.TimeCacheRolesHours));
             return Result<List<RoleDTO>>.Success(roles);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
@@ -50,7 +52,7 @@ public class RoleApiAdapter(IRoleApi roleApi, IRoleCache roleCache, IUserRoleCac
                 return Result<List<RoleSimpleDTO>>.Success([..dataCache]);
             }
             var roles = await _roleApi.RolesByUserAsync(userId, _settings.SoftwareId);
-            await _userRoleCache.SetAsync(userId,roles, TimeSpan.FromHours(1));
+            await _userRoleCache.SetAsync(userId,roles, TimeSpan.FromMinutes(_cacheConfig.TimeCacheRolesUserMinutes));
             return Result<List<RoleSimpleDTO>>.Success(roles);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)

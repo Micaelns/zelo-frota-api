@@ -1,5 +1,6 @@
 using Api.Handlers;
 using Api.Providers;
+using Infra.Cache;
 using Infra.Cache.Mongo.context;
 using Infra.Data.Commands;
 using Infra.Data.Contexts;
@@ -25,6 +26,11 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.Configure<KafkaSettings>(
     builder.Configuration.GetSection("Kafka")
 );
+
+builder.Services.Configure<CacheSettings>(
+    builder.Configuration.GetSection("Cache")
+);
+
 // Add services to the container.
 
 builder.Services.AddControllers();
