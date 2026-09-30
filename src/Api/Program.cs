@@ -1,4 +1,4 @@
-using Api.Handlers;
+ï»¿using Api.Handlers;
 using Api.Providers;
 using Infra.Cache;
 using Infra.Cache.Mongo.context;
@@ -7,6 +7,7 @@ using Infra.Data.Contexts;
 using Infra.Extensions;
 using Infra.Messaging.Kafka;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Serilog;
 using Serilog.Sinks.Grafana.Loki;
 
@@ -38,7 +39,7 @@ builder.Services.AddOpenTelemetry(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddContexts(builder.Configuration["connectionStringSqlServer"]);
 
@@ -54,18 +55,27 @@ builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAutho
 builder.Services.RegisterMongoCache(builder.Configuration);
 builder.Services.RegisterSwagger();
 
+builder.Services.AddControllers(options =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+                     .RequireAuthenticatedUser()
+                     .Build();
+
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
+
 builder.Services.AddCors(options =>
 {
     var origins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
 
-    options.AddPolicy("PermitirLocalhost", 
+    options.AddPolicy("PermitirLocalhost",
         policy => policy.WithOrigins(origins)
                 .AllowAnyHeader()
                 .AllowAnyMethod());
 });
 var app = builder.Build();
 
-Console.WriteLine("*** Iniciando configurações da Aplicação: ");
+Console.WriteLine("*** Iniciando configuraÃ§Ãµes da AplicaÃ§Ã£o: ");
 
 if (args.Length > 0)
 {
