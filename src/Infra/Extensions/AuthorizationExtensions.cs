@@ -1,5 +1,6 @@
 ﻿using Infra.External.Authentic;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -29,6 +30,22 @@ public static class AuthorizationExtensions
 
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(key))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        context.HandleResponse();
+
+                        context.Response.StatusCode =
+                            StatusCodes.Status401Unauthorized;
+
+                        await context.Response.WriteAsJsonAsync(new
+                        {
+                            message = "Você não está autenticado ou seu token é inválido."
+                        });
+                    }
                 };
             });
 

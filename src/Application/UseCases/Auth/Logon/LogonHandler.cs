@@ -16,7 +16,7 @@ public class LogonHandler(IAuthentic authentic, ILogger<LogonHandler> logger) : 
         CancellationToken cancellationToken)
     {
             
-        var logon = await _authentic.LogonAsync(new() { Email = query.Email, Password = query.Password});
+        var logon = await _authentic.LogonAsync(new() { Email = query.Email, Password = query.Password, DeviceId = query.DeviceId});
         
 
         if( !logon.IsSuccess)

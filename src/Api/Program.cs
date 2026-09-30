@@ -48,10 +48,11 @@ builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKe
 builder.Services.RegistryAuthenticRefit(builder.Configuration);
 builder.Services.AddInfrastructureJWT(builder.Configuration);
 builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler,CustomAuthorizationMiddlewareResultHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider,PermissionPolicyProvider>();
-builder.Services.AddScoped<IAuthorizationHandler,PermissionAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 builder.Services.RegisterMongoCache(builder.Configuration);
+builder.Services.RegisterSwagger();
 
 builder.Services.AddCors(options =>
 {
