@@ -54,11 +54,13 @@ public class KafkaProducer : IMessageProducer
             return;
         }
 
-        var topic = _mapper.GetTopic<T>();
-
-        var json = JsonSerializer.Serialize(message);
         try
         {
+
+            var topic = _mapper.GetTopic<T>();
+
+            var json = JsonSerializer.Serialize(message);
+
             await _retryPolicy.ExecuteAsync(async () =>
             {
                 await _producer.ProduceAsync(topic, new Message<string, string>
