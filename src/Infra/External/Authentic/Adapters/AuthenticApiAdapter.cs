@@ -47,7 +47,6 @@ public class AuthenticApiAdapter(IAuthenticApi autheticApi, ILogger<AuthenticApi
         try
         {
             var logout = await _autheticApi.LogoutAsync(query);
-            Console.WriteLine($"teste feito: {logout}", logout);
             return Result<AuthMessageDTO>.Success(logout);
         }
         catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.Forbidden)
