@@ -7,5 +7,5 @@ public interface IBaseRepository<T>
     public Task<T?> FindAsync(Guid id);
     public Task AddAsync(T value);
     public Task UpdateAsync(T value);
-        public Task DeleteLogicalAsync(Guid id);
+    public Task DeleteLogicalAsync(Guid id);
 }

@@ -17,6 +17,7 @@ public static class ImplementsExtensions
         services.AddScoped<IVehicleRepository, VehicleRepository>();
         services.AddScoped<IVehicleTypeRepository, VehicleTypeRepository>();
         services.AddScoped<IDestinationRepository, DestinationRepository>();
+        services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<ITravelQuery, TravelQuery>();
 
         return services;

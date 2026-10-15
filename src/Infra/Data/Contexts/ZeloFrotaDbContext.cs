@@ -9,9 +9,22 @@ public class ZeloFrotaDbContext(DbContextOptions<ZeloFrotaDbContext> options) : 
     public DbSet<VehicleType> VehicleTypes => Set<VehicleType>();
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<Travel> Travels => Set<Travel>();
+    public DbSet<Driver> Drivers => Set<Driver>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Driver>(entity =>
+        {
+            entity.HasKey(v => v.Id);
+            entity.HasQueryFilter(x => x.Deleted == null);
+            entity.OwnsOne(d => d.DriverLicense, driverLicense =>
+            {
+                driverLicense.Property(a => a.NumberLicense).HasColumnName("NumberDriverLicense");
+                driverLicense.Property(a => a.LicenseCategory).HasColumnName("LicenseCategoryDriverLicense");
+                driverLicense.Property(a => a.ExpirationDate).HasColumnName("ExpirationDateDriverLicense");
+            });
+        });
+
         modelBuilder.Entity<Destination>(entity =>
         {
             entity.HasKey(v => v.Id);

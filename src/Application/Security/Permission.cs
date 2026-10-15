@@ -15,6 +15,9 @@ public class Permission
     public const string StartVehicleTravel = "start.vehicleTravel";
     public const string ListVehicleTravel = "list.vehicleTravel";
     public const string FindVehicleTravel = "find.vehicleTravel";
+    public const string CreateDriver = "create.driver";
+    public const string ListDriver = "list.driver";
+    public const string FindDriver = "find.driver";
     public const string HankingEconomyVehicleTravel = "hankingEconomy.vehicleTravel";
     public const string HankingMilageVehicleTravel = "hankingMilage.vehicleTravel";
     public const string ReportsVehicleTravel = "reports.vehicleTravel";

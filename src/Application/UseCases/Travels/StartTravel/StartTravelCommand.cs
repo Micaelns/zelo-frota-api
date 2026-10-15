@@ -8,5 +8,6 @@ public class StartTravelCommand : IRequest<Result<TravelDTO>>
 {
     public required Guid VehicleId { get; set; }
     public required Guid DestinationId { get; set; }
+    public Guid? DriverId { get; set; }
     public DateTime? WhenTravel { get; set; }
 }

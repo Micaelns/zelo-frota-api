@@ -63,6 +63,30 @@ namespace Infra.Migrations
                     b.ToTable("Destinations");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Driver", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Drivers");
+                });
+
             modelBuilder.Entity("Domain.Entities.Travel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -78,6 +102,9 @@ namespace Infra.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("DestinationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("DriverId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("End")
@@ -98,6 +125,8 @@ namespace Infra.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DestinationId");
+
+                    b.HasIndex("DriverId");
 
                     b.HasIndex("VehicleId", "End", "Start");
 
@@ -150,9 +179,43 @@ namespace Infra.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RequeridLicenseCategory")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("VehicleTypes");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Driver", b =>
+                {
+                    b.OwnsOne("Domain.ObjectValues.DriverLicense", "DriverLicense", b1 =>
+                        {
+                            b1.Property<Guid>("DriverId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime>("ExpirationDate")
+                                .HasColumnType("datetime2")
+                                .HasColumnName("ExpirationDateDriverLicense");
+
+                            b1.Property<int>("LicenseCategory")
+                                .HasColumnType("int")
+                                .HasColumnName("LicenseCategoryDriverLicense");
+
+                            b1.Property<string>("NumberLicense")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("NumberDriverLicense");
+
+                            b1.HasKey("DriverId");
+
+                            b1.ToTable("Drivers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DriverId");
+                        });
+
+                    b.Navigation("DriverLicense")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Domain.Entities.Travel", b =>
@@ -163,6 +226,10 @@ namespace Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId");
+
                     b.HasOne("Domain.Entities.Vehicle", "Vehicle")
                         .WithMany("Travels")
                         .HasForeignKey("VehicleId")
@@ -170,6 +237,8 @@ namespace Infra.Migrations
                         .IsRequired();
 
                     b.Navigation("Destination");
+
+                    b.Navigation("Driver");
 
                     b.Navigation("Vehicle");
                 });

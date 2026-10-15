@@ -11,10 +11,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Travels.StartTravel;
 
-public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, ITravelQuery travelQuery, IMessageProducer producer, ILogger<StartTravelHandler> logger) : IRequestHandler<StartTravelCommand, Result<TravelDTO>>
+public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinationRepository destinationRepository, IDriverRepository driverRepository, ITravelQuery travelQuery, IMessageProducer producer, ILogger<StartTravelHandler> logger) : IRequestHandler<StartTravelCommand, Result<TravelDTO>>
 {
     private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
     private readonly IDestinationRepository _destinationRepository = destinationRepository;
+    private readonly IDriverRepository _driverRepository = driverRepository;
     private readonly ITravelQuery _travelQuery = travelQuery;
     private readonly IMessageProducer _producer = producer;
     private readonly ILogger<StartTravelHandler> _logger = logger;
@@ -41,8 +42,14 @@ public class StartTravelHandler(IVehicleRepository vehicleRepository, IDestinati
                 return Result<TravelDTO>.Failure("Destino não encontrado");
             }
 
+            Driver? driver = null;
+            if (command.DriverId is not null)
+            {
+                driver = await _driverRepository.FindAsync(command.DriverId.Value);
+            }
+
             var hasOpenTravel = await _travelQuery.HasOpenTravelInVehicleAsync(command.VehicleId);
-            var travel = vehicle.StartTravel(command.DestinationId, hasOpenTravel, command.WhenTravel);
+            var travel = vehicle.StartTravel(command.DestinationId, hasOpenTravel, driver, command.WhenTravel);
 
             await _vehicleRepository.SaveChangesAsync();
 

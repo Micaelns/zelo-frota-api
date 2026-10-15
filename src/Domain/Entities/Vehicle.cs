@@ -31,12 +31,24 @@ public class Vehicle : Base
         Mileage = mileage;
     }
 
-    public Travel StartTravel(Guid destinationId, bool hasOpenTravel, DateTime? when = null)
+    public Travel StartTravel(Guid destinationId, bool hasOpenTravel, Driver? driver = null, DateTime? when = null)
     {
         if (hasOpenTravel)
             throw new InvalidOperationException("Já existe uma viagem em andamento");
+ 
+        if (driver is not null)
+        {
+            if (VehicleType is null)
+            {
+                throw new InvalidDataException("VehicleType é necessário para calcular licença do motorista");
+            }
+            if (!driver.DriverLicense.CanDrive(VehicleType.RequeridLicenseCategory))
+            {
+                throw new InvalidOperationException("Motorista não possui qualificação necessária");
+            }
+        } 
 
-        var travel = new Travel(this.Id, destinationId);
+        var travel = new Travel(this.Id, destinationId, driver?.Id);
 
         travel.Starts(this.Mileage, when);
 

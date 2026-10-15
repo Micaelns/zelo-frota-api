@@ -4,13 +4,17 @@ public class Travel : Base
 {
     protected Travel() { }
 
-    public Travel(Guid vehicleId,Guid destinationId){
+    public Travel(Guid vehicleId,Guid destinationId, Guid? driverId=null)
+    {
         VehicleId = vehicleId;
         DestinationId = destinationId;
+        DriverId = driverId;
     }
 
     public Guid VehicleId { get; private set; }
     public Vehicle Vehicle { get; private set; }
+    public Driver? Driver { get; private set; }
+    public Guid? DriverId { get; private set; }
     public Guid DestinationId { get; private set; }
     public Destination Destination { get; private set; }
     public int? StartedMileage { get; private set; }
