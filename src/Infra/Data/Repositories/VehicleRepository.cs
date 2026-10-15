@@ -30,7 +30,9 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
 
     public async Task<Vehicle?> FindAsync(Guid id)
     {
-        return await _context.Vehicles.FindAsync(id);
+        return await _context.Vehicles 
+            .Include(v => v.VehicleType)
+            .FirstOrDefaultAsync(v => v.Id == id);
     }
 
     public async Task AddAsync(Vehicle value)

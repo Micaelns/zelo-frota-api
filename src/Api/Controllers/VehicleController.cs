@@ -64,6 +64,7 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
         {
             VehicleId = vehicleId,
             DestinationId = request.DestinationId,
+            DriverId = request.DriverId,
             WhenTravel = request.WhenTravel
         };
         var result = await _mediator.Send(command);

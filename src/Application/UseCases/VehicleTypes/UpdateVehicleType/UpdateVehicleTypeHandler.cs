@@ -26,6 +26,7 @@ public class UpdateVehicleTypeHandler(IVehicleTypeRepository vehicleTypeReposito
             }
 
             vehicleType.Name = command.Name;
+            vehicleType.RequeridLicenseCategory = command.RequeridLicenseCategory;
 
             await _repository.UpdateAsync(vehicleType);
 

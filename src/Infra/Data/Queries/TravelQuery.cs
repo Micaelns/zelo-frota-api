@@ -21,6 +21,7 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
     {
         return _context.Travels
             .Include(c => c.Destination)
+            .Include(c => c.Driver)
             .Include(t => t.Vehicle)
             .ThenInclude(v => v.VehicleType);
     }

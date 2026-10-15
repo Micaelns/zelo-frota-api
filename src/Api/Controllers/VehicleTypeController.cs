@@ -86,7 +86,8 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
         var command = new UpdateVehicleTypeCommand()
         {
             Id = id,
-            Name = request.Name
+            Name = request.Name,
+            RequeridLicenseCategory = request.RequeridLicenseCategory
         };
 
         var result = await _mediator.Send(command);

@@ -14,6 +14,7 @@ public class TravelMapper
             VehiclePlate = travel.Vehicle.Plate,
             VehicleId = travel.Vehicle.Id,
             Vehicle = travel.Vehicle.VehicleType.Name,
+            Driver = travel.Driver?.Name,
             DestinationId = travel.Destination.Id,
             Destination = travel.Destination.ToString(),
             Autonomy = travel.Autonomy,

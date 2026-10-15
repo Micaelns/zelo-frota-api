@@ -17,7 +17,7 @@ public class CreateVehicleTypeHandler(IVehicleTypeRepository vehicleTypeReposito
     {
         try
         {
-            var vehicleType = new VehicleType(command.Name);
+            var vehicleType = new VehicleType(command.Name, command.RequeridLicenseCategory);
 
             await _repository.AddAsync(vehicleType);
 

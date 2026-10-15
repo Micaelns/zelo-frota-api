@@ -8,6 +8,7 @@ public class TravelDTO
     public string Vehicle { get; set; } = string.Empty;
     public Guid DestinationId { get; set; }
     public string Destination { get; set; } = string.Empty;
+    public string? Driver { get; set; }
     public int? StartedMileage { get; set; }
     public int? FinishedMileage { get; set; }
     public float? Autonomy { get; set; }

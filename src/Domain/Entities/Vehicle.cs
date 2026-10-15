@@ -44,7 +44,7 @@ public class Vehicle : Base
             }
             if (!driver.DriverLicense.CanDrive(VehicleType.RequeridLicenseCategory))
             {
-                throw new InvalidOperationException("Motorista não possui qualificação necessária");
+                throw new InvalidOperationException("Motorista não possui qualificação necessária. Exigida: '"+VehicleType.RequeridLicenseCategory.ToString()+"', Possui: '"+ driver.DriverLicense.LicenseCategory.ToString()+ "'");
             }
         } 
 
