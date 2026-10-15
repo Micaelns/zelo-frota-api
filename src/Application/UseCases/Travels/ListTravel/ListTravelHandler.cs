@@ -33,7 +33,7 @@ public class ListTravelHandler(ITravelQuery travelQuery, IVehicleRepository vehi
 
 
             _logger.LogInformation("Lista de viagens do veículo {@Plate} foi finalizada com sucesso.", vehicle.Plate);
-            return Result<List<TravelDTO>>.Success(TravelMapper.ToListTravelDTO(vehicleTravelList.ToList()), pagination);
+            return Result<List<TravelDTO>>.Success(vehicleTravelList.ToList(), pagination);
         }
         catch (Exception ex)
         {

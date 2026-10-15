@@ -1,5 +1,6 @@
 ﻿using Application.Contracts.Abstractions.Travels.Query;
 using Application.DTO.Travel;
+using Application.Helpers;
 using Domain.Entities;
 using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
                     .Where(element => element.VehicleId == vehicleId)
                     .CountAsync();
     }
-    public async Task<IEnumerable<Travel>> GetTravelsByVehicleAsync(Guid vehicleId, int page, int take = 10)
+    public async Task<IEnumerable<TravelDTO>> GetTravelsByVehicleAsync(Guid vehicleId, int page, int take = 10)
     {
         var skip = Math.Max(0, (page - 1) * take);
         take = Math.Clamp(take, 1, 1000);
@@ -54,6 +55,20 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
             .AsNoTracking()
             .Where(element => element.VehicleId == vehicleId)
             .OrderByDescending(element => element.Start)
+            .Select(travel => new TravelDTO{
+                IdTravel = travel.Id,
+                VehiclePlate = travel.Vehicle.Plate,
+                VehicleId = travel.Vehicle.Id,
+                Vehicle = travel.Vehicle.VehicleType.Name,
+                Driver = travel.Driver != null ? travel.Driver.Name : null,
+                DestinationId = travel.Destination.Id,
+                Destination = travel.Destination.ToString(),
+                Autonomy = travel.Autonomy,
+                StartedMileage = travel.StartedMileage,
+                Start = TimeZoneHelper.ToSaoPaulo(travel.Start),
+                FinishedMileage = travel.FinishedMileage,
+                End = TimeZoneHelper.ToSaoPaulo(travel.End)
+            })
             .Skip(skip)
             .Take(take)
             .ToListAsync();

@@ -24,14 +24,4 @@ public class TravelMapper
             End = TimeZoneHelper.ToSaoPaulo(travel.End)
         };
     }
-
-    public static List<TravelDTO> ToListTravelDTO(List<Travel> travels)
-    { 
-        var list = new List<TravelDTO>();
-        foreach(Travel travel in travels)
-        {
-            list.Add(ToTravelDTO(travel));
-        }
-        return list;
-    }
 }
