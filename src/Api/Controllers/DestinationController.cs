@@ -1,4 +1,5 @@
-﻿using Application.Security;
+﻿using Api.Helper;
+using Application.Security;
 using Application.UseCases.Destinations.CreateDestination;
 using Application.UseCases.Destinations.ListDestination;
 using MediatR;
@@ -22,8 +23,8 @@ public class DestinationController(IMediator mediator, ILogger<DestinationContro
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na listagem de destinos. BadRequest: {@request} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema na listagem de destinos. {@request} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso na listagem de destinos.");
@@ -38,11 +39,11 @@ public class DestinationController(IMediator mediator, ILogger<DestinationContro
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na criação de destino. {@command} {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema na criação de destino. {@command} ; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso na criação de destino.");
-        return Created("", result.Value);
+        return Created("", result);
     }
 }

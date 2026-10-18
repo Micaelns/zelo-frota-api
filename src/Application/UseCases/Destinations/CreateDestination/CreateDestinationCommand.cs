@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Destinations.CreateDestination
 {
-    public class CreateDestinationCommand : IRequest<Result<Guid>>
+    public class CreateDestinationCommand : IRequest<Result<Guid?>>
     {
         public string ZipCode { get; set; } = string.Empty;
         public string? Address { get; set; }
