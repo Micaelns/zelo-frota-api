@@ -2,8 +2,18 @@
 
 namespace Domain.Entities;
 
-public class VehicleType(string name, LicenseCategory requeridLicenseCategory = LicenseCategory.None) : Base()
+public class VehicleType : Base
 {
-    public string Name { get; set; } = name;
-    public LicenseCategory RequeridLicenseCategory { get; set; } = requeridLicenseCategory;
+    public string Name { get; set; }
+    public LicenseCategory RequeridLicenseCategory { get; set; }
+
+    public VehicleType(string name, LicenseCategory requeridLicenseCategory = LicenseCategory.None)
+    {
+        if (String.IsNullOrWhiteSpace(name))
+        {
+            throw new InvalidDataException("O campo Nome não podem ser vazio");
+        }
+        Name = name;
+        RequeridLicenseCategory = requeridLicenseCategory;
+    }
 }
