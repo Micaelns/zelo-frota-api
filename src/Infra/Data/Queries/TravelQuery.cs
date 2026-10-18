@@ -39,20 +39,14 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
            .FirstOrDefaultAsync(element => element.Id == travelId);
     }
 
-
-    public async Task<int> GetTravelsByVehicleContAsync(Guid vehicleId)
+    public async Task<(IEnumerable<TravelDTO>, int totalItems)> GetTravelsByVehicleAsync(Guid vehicleId, int page, int take = 10)
     {
-        return await _context.Travels
-                    .Where(element => element.VehicleId == vehicleId)
-                    .CountAsync();
-    }
-    public async Task<IEnumerable<TravelDTO>> GetTravelsByVehicleAsync(Guid vehicleId, int page, int take = 10)
-    {
-        var skip = Math.Max(0, (page - 1) * take);
-        take = Math.Clamp(take, 1, 1000);
+        var skip = (page - 1) * take;
+        var query = QueryTravelComplete().AsNoTracking();
 
-        return await QueryTravelComplete()
-            .AsNoTracking()
+        int totalItems = await query.CountAsync();
+
+        var items = await query
             .Where(element => element.VehicleId == vehicleId)
             .OrderByDescending(element => element.Start)
             .Select(travel => new TravelDTO
@@ -73,6 +67,8 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
             .Skip(skip)
             .Take(take)
             .ToListAsync();
+
+        return (items, totalItems);
     }
 
     public async Task<IEnumerable<VehicleEconomyDto>> GetRankingVehicleEconomyAsync(bool orderByDescending, int take = 10)

@@ -15,22 +15,21 @@ public class DriverRepository(ZeloFrotaDbContext context) : IDriverRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Driver>> AllAsync(int page, int take = 10)
+    public async Task<(IEnumerable<Driver>, int totalItems)> AllAsync(int page, int take)
     {
         var skip = (page - 1) * take;
-        return await _context.Drivers
-                    .AsNoTracking()
+        var query = _context.Drivers.AsNoTracking();
+
+        int totalItems = await query.CountAsync();
+
+        var items = await query
                     .Include("DriverLicense")
                     .OrderByDescending(element => element.Name)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
-    }
 
-    public async Task<int> AllContAsync()
-    {
-        return await _context.Vehicles
-                    .CountAsync();
+        return (items, totalItems);
     }
 
     public async Task DeleteLogicalAsync(Guid id)

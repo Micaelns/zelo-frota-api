@@ -17,15 +17,15 @@ public class ListVehicleTypeHandler(IVehicleTypeRepository repository, ILogger<L
     {
         try
         {
-            var vehicleTypeList = await _repository.AllAsync(query.Page, query.Take);
-            var totalItems = await _repository.AllContAsync();
-            var pagination = new Pagination()
+            var pagination = new Pagination(query.Page, query.Take);
+            var (vehicleTypeList, totalItems) = await _repository.AllAsync(pagination.CurrentPage, pagination.PerPage);
+            pagination.TotalItems = totalItems;
+
+            if (vehicleTypeList.Count() == 0)
             {
-                TotalItems = totalItems,
-                CurrentPage = query.Page,
-                TotalPages = (int)Math.Ceiling((double)totalItems / query.Take),
-                PerPage = query.Take
-            };
+                _logger.LogInformation("Listagem de tipos de veículo não contem dados.");
+                return Result<List<VehicleType>>.Failure("Página não contem dados", ErrorType.NotFound);
+            }
 
             _logger.LogInformation("Listagem de tipos de veículo com sucesso.");
             return Result<List<VehicleType>>.Success(vehicleTypeList.ToList(), pagination);
@@ -33,7 +33,7 @@ public class ListVehicleTypeHandler(IVehicleTypeRepository repository, ILogger<L
         catch (Exception ex)
         {
             _logger.LogError("Erro no processo de listar tipos de veiculo. {@query} {@error}", query, ex.Message);
-            return Result<List<VehicleType>>.Failure(ex.Message);
+            return Result<List<VehicleType>>.Failure(ex.Message, ErrorType.Internal);
         }
     }
 }

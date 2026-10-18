@@ -2,8 +2,7 @@
 
 public interface IBaseRepository<T>
 {
-    public Task<int> AllContAsync();
-    public Task<IEnumerable<T>> AllAsync(int skip, int take = 10);
+    public Task<(IEnumerable<T>, int totalItems)> AllAsync(int page, int take);
     public Task<T?> FindAsync(Guid id);
     public Task AddAsync(T value);
     public Task UpdateAsync(T value);

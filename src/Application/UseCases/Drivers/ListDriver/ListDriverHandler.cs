@@ -11,16 +11,22 @@ public class ListDriverHandler(IDriverRepository driverRepository, ILogger<ListD
     private readonly IDriverRepository _driverRepository = driverRepository;
     private readonly ILogger<ListDriverHandler> _logger = logger;
     public async Task<Result<List<Driver>>> Handle(
-        ListDriverQuery command,
+        ListDriverQuery query,
         CancellationToken cancellationToken)
     {
         try
         {
-            var driverList = await _driverRepository.AllAsync(command.Page, command.Take);
-            var totalItems = await _driverRepository.AllContAsync();
-            var pagination = new Pagination(totalItems, command.Page, command.Take);
+            var pagination = new Pagination(query.Page, query.Take);
+            var (driverList, totalItems) = await _driverRepository.AllAsync(pagination.CurrentPage, pagination.PerPage);
+            pagination.TotalItems = totalItems;
 
-            _logger.LogInformation("Lista de motoristas foi finalizada com sucesso.");
+            if (driverList.Count() == 0)
+            {
+                _logger.LogInformation("Listagem de motorista não contem dados.");
+                return Result<List<Driver>>.Failure("Página não contem dados", ErrorType.NotFound);
+            }
+
+            _logger.LogInformation("Sucesso na listagem dos motoristas. {@query}", query);
             return Result<List<Driver>>.Success(driverList.ToList(), pagination);
         }
         catch (Exception ex)

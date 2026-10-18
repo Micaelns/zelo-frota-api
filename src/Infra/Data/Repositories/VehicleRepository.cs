@@ -9,11 +9,7 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-    public async Task<int> AllContAsync()
-    {
-        throw new NotImplementedException();
-    }
-    public async Task<IEnumerable<Vehicle>> AllAsync(int page, int take = 10)
+    public Task<(IEnumerable<Vehicle>, int totalItems)> AllAsync(int page, int take)
     {
         throw new NotImplementedException();
     }

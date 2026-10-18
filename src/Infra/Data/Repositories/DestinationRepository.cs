@@ -9,20 +9,20 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-    public async Task<int> AllContAsync()
-    {
-        return await _context.Destinations
-                    .CountAsync();
-    }
-
-    public async Task<IEnumerable<Destination>> AllAsync(int page, int take = 10)
+    public async Task<(IEnumerable<Destination>, int totalItems)> AllAsync(int page, int take)
     {
         var skip = (page - 1) * take;
-        return await _context.Destinations
+        var query = _context.Destinations.AsNoTracking();
+
+        int totalItems = await query.CountAsync();
+
+        var items = await query
                     .OrderByDescending(element => element.ZipCode)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
+
+        return (items, totalItems);
     }
 
     public async Task<Destination?> FindAsync(Guid id)
@@ -53,5 +53,4 @@ public class DestinationRepository(ZeloFrotaDbContext context) : IDestinationRep
     {
         throw new NotImplementedException();
     }
-
 }

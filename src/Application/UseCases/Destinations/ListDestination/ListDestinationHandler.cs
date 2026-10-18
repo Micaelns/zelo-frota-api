@@ -11,16 +11,22 @@ public class ListDestinationHandler(IDestinationRepository repository, ILogger<L
     private readonly IDestinationRepository _repository = repository;
     private readonly ILogger<ListDestinationHandler> _logger = logger;
     public async Task<Result<List<Destination>>> Handle(
-        ListDestinationQuery command,
+        ListDestinationQuery query,
         CancellationToken cancellationToken)
     {
         try
         {
-            var DestinationList = await _repository.AllAsync(command.Page, command.Take);
-            var totalItems = await _repository.AllContAsync();
-            var pagination = new Pagination(totalItems, command.Page, command.Take);
+            var pagination = new Pagination(query.Page, query.Take);
+            var (DestinationList, totalItems) = await _repository.AllAsync(pagination.CurrentPage, pagination.PerPage);
+            pagination.TotalItems = totalItems;
 
-            _logger.LogInformation("Sucesso na listagem dos destinos. {@command}", command);
+            if (DestinationList.Count() == 0)
+            {
+                _logger.LogInformation("Listagem de tipos de veículo não contem dados.");
+                return Result<List<Destination>>.Failure("Página não contem dados", ErrorType.NotFound);
+            }
+
+            _logger.LogInformation("Sucesso na listagem dos destinos. {@query}", query);
 
             return Result<List<Destination>>.Success(DestinationList.ToList(), pagination);
         }

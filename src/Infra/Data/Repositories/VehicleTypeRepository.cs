@@ -9,21 +9,20 @@ public class VehicleTypeRepository(ZeloFrotaDbContext context) : IVehicleTypeRep
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-
-    public async Task<int> AllContAsync()
-    {
-        return await _context.VehicleTypes
-                    .CountAsync();
-    }
-
-    public async Task<IEnumerable<VehicleType>> AllAsync(int page, int take = 10)
+    public async Task<(IEnumerable<VehicleType>, int totalItems)> AllAsync(int page, int take = 10)
     {
         var skip = (page - 1) * take;
-        return await _context.VehicleTypes
+        var query = _context.VehicleTypes.AsNoTracking();
+
+        int totalItems = await query.CountAsync();
+
+        var items = await query
                     .OrderByDescending(element => element.Name)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
+
+        return (items, totalItems);
     }
 
     public async Task<VehicleType?> FindAsync(Guid id)

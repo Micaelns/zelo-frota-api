@@ -13,30 +13,34 @@ public class ListTravelHandler(ITravelQuery travelQuery, IVehicleRepository vehi
     private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
     private readonly ILogger<ListTravelHandler> _logger = logger;
     public async Task<Result<List<TravelDTO>>> Handle(
-        ListTravelQuery command,
+        ListTravelQuery query,
         CancellationToken cancellationToken)
     {
         try
         {
-            var vehicle = await _vehicleRepository.FindAsync(command.VehicleId);
+            var vehicle = await _vehicleRepository.FindAsync(query.VehicleId);
 
             if (vehicle is null)
             {
-                _logger.LogError("Veículo {@VehicleId} não encontrado", command.VehicleId);
-                return Result<List<TravelDTO>>.Failure("Veículo não encontrado");
+                _logger.LogError("Veículo {@VehicleId} não encontrado", query.VehicleId);
+                return Result<List<TravelDTO>>.Failure("Veículo não encontrado", ErrorType.NotFound);
             }
+            var pagination = new Pagination(query.Page, query.Take);
+            var (vehicleTravelList, totalItems) = await _travelQuery.GetTravelsByVehicleAsync(query.VehicleId, query.Page, query.Take);
+            pagination.TotalItems = totalItems;
 
-            var vehicleTravelList = await _travelQuery.GetTravelsByVehicleAsync(command.VehicleId,command.Page, command.Take);
-            var totalItems = await _travelQuery.GetTravelsByVehicleContAsync(command.VehicleId);
-            var pagination = new Pagination(totalItems, command.Page, command.Take);
-
+            if (vehicleTravelList.Count() == 0)
+            {
+                _logger.LogInformation("Listagem de viagens de veículo não contem dados.");
+                return Result<List<TravelDTO>>.Failure("Página não contem dados", ErrorType.NotFound);
+            } 
 
             _logger.LogInformation("Lista de viagens do veículo {@Plate} foi finalizada com sucesso.", vehicle.Plate);
             return Result<List<TravelDTO>>.Success(vehicleTravelList.ToList(), pagination);
         }
         catch (Exception ex)
         {
-            _logger.LogError("Erro no processo de listar viagens do veículo {@command.VehicleId}. {@error}", command.VehicleId, ex.Message);
+            _logger.LogError("Erro no processo de listar viagens do veículo {@command.VehicleId}. {@error}", query.VehicleId, ex.Message);
             return Result<List<TravelDTO>>.Failure(ex.Message);
         }
     }

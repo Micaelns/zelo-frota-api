@@ -18,14 +18,6 @@ public class Pagination
 
     public Pagination() { }
 
-    public Pagination(int totalItems, int page, int perPage)
-    {
-        TotalItems = totalItems;
-        CurrentPage = page;
-        TotalPages = (int)Math.Ceiling((double)totalItems / perPage);
-        PerPage = perPage;
-    }
-
     public Pagination(int page, int perPage) 
     {
         CurrentPage = Math.Max(0, page);

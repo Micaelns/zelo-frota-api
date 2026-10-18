@@ -37,8 +37,9 @@ public class ListVehicleTypeHandlerTest
     {
         var query = new ListVehicleTypeQuery() { Page = 1, Take = 10 };
         var listVehicleHandler = new ListVehicleTypeHandler(_mockRepository.Object, _loggerMock.Object);
-        var validVehicleTypes = new List<VehicleType>();
-        _mockRepository.Setup(repo => repo.AllAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(validVehicleTypes);
+        var validVehicleTypes = new List<VehicleType>() { new("t1"), new("t2") };
+        int totalItems = 2;
+        _mockRepository.Setup(repo => repo.AllAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync((validVehicleTypes, totalItems));
 
         var result = await listVehicleHandler.Handle(query, _cancellationToken);
 
