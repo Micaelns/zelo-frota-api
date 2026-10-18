@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Api.Requests.Vehicles;
+﻿namespace Api.Requests.Vehicles;
 public class StartTravelRequest
 {
     public Guid DestinationId { get; set; }

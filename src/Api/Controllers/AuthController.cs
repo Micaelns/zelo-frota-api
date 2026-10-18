@@ -1,5 +1,4 @@
-﻿using Application.DTO.Authentic;
-using Application.UseCases.Auth.Logon;
+﻿using Application.UseCases.Auth.Logon;
 using Application.UseCases.Auth.Logout;
 using Application.UseCases.Auth.RefreshToken;
 using MediatR;

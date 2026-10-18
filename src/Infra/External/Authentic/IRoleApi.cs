@@ -1,5 +1,4 @@
-﻿using Application.DTO;
-using Application.DTO.Authentic;
+﻿using Application.DTO.Authentic;
 using Refit;
 
 namespace Infra.External.Authentic;

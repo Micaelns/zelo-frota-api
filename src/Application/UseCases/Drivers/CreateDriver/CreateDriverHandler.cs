@@ -1,5 +1,4 @@
 ﻿using Application.DTO;
-using Application.UseCases.Destinations.CreateDestination;
 using Domain.Entities;
 using Domain.Interfaces.Repository;
 using MediatR;

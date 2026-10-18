@@ -1,7 +1,6 @@
 ﻿using Application.Contracts.Abstractions.Travels.Query;
 using Application.DTO;
 using Application.DTO.Travel;
-using Application.Mappers;
 using Domain.Interfaces.Repository;
 using MediatR;
 using Microsoft.Extensions.Logging;

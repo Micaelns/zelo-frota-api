@@ -1,5 +1,4 @@
-﻿using Application.Security;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
 namespace Api.Providers;

@@ -2,7 +2,6 @@
 using Application.DTO;
 using Application.DTO.Travel;
 using Application.Mappers;
-using Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
