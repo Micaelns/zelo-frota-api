@@ -6,5 +6,6 @@ public enum ErrorType
     ExternalServiceUnavailable,
     AccessUnauthorized,
     Internal,
-    NotFound
+    NotFound,
+    Conflict,
 }

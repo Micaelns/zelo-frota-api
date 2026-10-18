@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Vehicles.CreateVehicle;
 
-public class CreateVehicleHandler(IVehicleRepository repository, IVehicleTypeRepository vehicleTypeRepository, ILogger<CreateVehicleHandler> logger) : IRequestHandler<CreateVehicleCommand, Result<Guid>>
+public class CreateVehicleHandler(IVehicleRepository repository, IVehicleTypeRepository vehicleTypeRepository, ILogger<CreateVehicleHandler> logger) : IRequestHandler<CreateVehicleCommand, Result<Guid?>>
 {
     private readonly IVehicleRepository _repository = repository;
     private readonly IVehicleTypeRepository _vehicleTypeRepository = vehicleTypeRepository;
     private readonly ILogger<CreateVehicleHandler> _logger = logger;
 
-    public async Task<Result<Guid>> Handle(
+    public async Task<Result<Guid?>> Handle(
         CreateVehicleCommand command,
         CancellationToken cancellationToken)
     {
@@ -25,7 +25,7 @@ public class CreateVehicleHandler(IVehicleRepository repository, IVehicleTypeRep
             if (exists is not null)
             {
                 _logger.LogError("Veículo {@Plate} já cadastrado", command.Plate);
-                return Result<Guid>.Failure("Veículo já cadastrado");
+                return Result<Guid?>.Failure("Veículo já cadastrado",ErrorType.Conflict);
             }
 
             var vehicleType = await _vehicleTypeRepository.FindAsync(command.Type);
@@ -33,7 +33,7 @@ public class CreateVehicleHandler(IVehicleRepository repository, IVehicleTypeRep
             if (vehicleType is null)
             {
                 _logger.LogError("Tipo de veículo {@command.Type} não existe", command.Type);
-                return Result<Guid>.Failure("Tipo de veículo não existe");
+                return Result<Guid?>.Failure("Tipo de veículo não existe",ErrorType.NotFound);
             }
 
             var vehicle = new Vehicle(
@@ -45,12 +45,12 @@ public class CreateVehicleHandler(IVehicleRepository repository, IVehicleTypeRep
             await _repository.AddAsync(vehicle);
 
             _logger.LogInformation("Veículo {@command.Plate} foi cadastrado com sucesso.", command.Plate);
-            return Result<Guid>.Success(vehicle.Id);
+            return Result<Guid?>.Success(vehicle.Id);
         }
         catch (Exception ex)
         {
             _logger.LogError("Erro no processo de cadastrar veiculo. {@command} {@error}", command, ex.Message);
-            return Result<Guid>.Failure(ex.Message);
+            return Result<Guid?>.Failure(ex.Message);
         }
     }
 }

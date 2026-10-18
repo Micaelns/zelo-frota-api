@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Application.UseCases.Vehicles.CreateVehicle;
 
-public class CreateVehicleCommand : IRequest<Result<Guid>>
+public class CreateVehicleCommand : IRequest<Result<Guid?>>
 {
     public string Plate { get; set; } = string.Empty;
     public int InitialMileage { get; set; }

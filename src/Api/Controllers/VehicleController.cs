@@ -1,4 +1,5 @@
-﻿using Api.Requests;
+﻿using Api.Helper;
+using Api.Requests;
 using Api.Requests.Vehicles;
 using Application.Security;
 using Application.UseCases.Travels.EndsTravel;
@@ -7,9 +8,9 @@ using Application.UseCases.Travels.MonthReport;
 using Application.UseCases.Travels.ShowTravel;
 using Application.UseCases.Travels.StartTravel;
 using Application.UseCases.Vehicles.CreateVehicle;
-using Application.UseCases.Vehicles.EconomyVehicleRanking;
 using Application.UseCases.Vehicles.ListVehicle;
-using Application.UseCases.Vehicles.MileageRanking;
+using Application.UseCases.Vehicles.RankingEconomyVehicle;
+using Application.UseCases.Vehicles.RankingMileage;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,8 +32,8 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na listagem de veículo. BadRequest: {@request} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema na listagem de veículo.  {@request} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso na listagem de veículo.");
@@ -47,12 +48,12 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na criação de veículo. {@command} {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema na criação de veículo. {@command} ; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso na criação de veículo. Result: {@result}", result.Value);
-        return Created("", result.Value);
+        return Created("", result);
     }
 
     [HttpPost]
@@ -71,12 +72,12 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao iniciar viagem. {@command} {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao iniciar viagem. {@command} ; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao iniciar viagem. {@command}", command);
-        return Created("", result.Value);
+        return Created("", result);
     }
 
     [HttpPost]
@@ -95,8 +96,8 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na Criação da viagem. {@command} {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao finalizar viagem. {@command} ; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         return Created("", result.Value);
@@ -118,8 +119,8 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao listar viagens de um veiculo. BadRequest: {@query} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao listar viagens. {@query} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao listar viagens.");
@@ -140,8 +141,8 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao encontra viagem. BadRequest: {@query} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao encontra viagem. {@query} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao encontrar viagem.");
@@ -150,34 +151,32 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
     [HttpGet]
     [Route("hanking/economy")]
-    [Authorize(Policy = Permission.HankingEconomyVehicleTravel)]
-    public async Task<IActionResult> GetHankingEconomy([FromQuery] EconomyRankingQuery query)
+    [Authorize(Policy = Permission.RankingEconomyVehicleTravel)]
+    public async Task<IActionResult> GetRankingEconomy([FromQuery] RankingEconomyQuery query)
     {
         var result = await _mediator.Send(query);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao Solicitar ranking de veiculos mais econômicos. BadRequest: {@query} : {@error}", query, result.Error);
-
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao solicitar ranking de veículos mais econômicos. {@query} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
-        _logger.LogInformation("Sucesso ao solicitar ranking de veiculos mais econômicos.");
+        _logger.LogInformation("Sucesso ao solicitar ranking de veículos mais econômicos.");
         return Ok(result);
     }
 
     [HttpGet]
     [Route("hanking/mileage")]
-    [Authorize(Policy = Permission.HankingMilageVehicleTravel)]
-    public async Task<IActionResult> GetHankingMilage([FromQuery] MileageRankingQuery query)
+    [Authorize(Policy = Permission.RankingMilageVehicleTravel)]
+    public async Task<IActionResult> GetRankingMilage([FromQuery] RankingMileageQuery query)
     {
         var result = await _mediator.Send(query);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao Solicitar ranking de quilometragem percorrida. BadRequest: {@query} : {@error}", query, result.Error);
-
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao solicitar ranking de quilometragem percorrida. {@query} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao solicitar ranking de quilometragem percorrida.");
@@ -193,12 +192,8 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao Solicitar Relatório. BadRequest: {@command} : {@error}", command, result.Error);
-            
-            if (result.ErrorType == Application.DTO.ErrorType.Validation)
-                return BadRequest(result.Error);
-
-            return StatusCode(500, result.Error);
+            _logger.LogWarning("Problema ao solicitar relatório. {@command} ; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao solicitar relatório de viagens.");

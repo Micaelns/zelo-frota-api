@@ -9,23 +9,13 @@ public class VehicleRepository(ZeloFrotaDbContext context) : IVehicleRepository
 {
     private readonly ZeloFrotaDbContext _context = context;
 
-
     public async Task<int> AllContAsync()
     {
-        return await _context.Vehicles
-                    .CountAsync();
+        throw new NotImplementedException();
     }
     public async Task<IEnumerable<Vehicle>> AllAsync(int page, int take = 10)
     {
-        var skip = (page - 1) * take;
-        return await _context.Vehicles
-                    .AsNoTracking()
-                    .Include("VehicleType")
-                    .OrderByDescending(element => element.Plate)
-                    .ThenBy(x => x.Id) // se tiver mais de uma Plate então por Id sempre 
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+        throw new NotImplementedException();
     }
 
     public async Task<Vehicle?> FindAsync(Guid id)

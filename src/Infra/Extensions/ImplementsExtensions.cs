@@ -1,5 +1,6 @@
 ﻿using Application.Contracts.Abstractions;
 using Application.Contracts.Abstractions.Travels.Query;
+using Application.Contracts.Abstractions.Vehicles.Query;
 using Application.Security;
 using Domain.Interfaces.Repository;
 using Infra.Data.Queries;
@@ -19,6 +20,7 @@ public static class ImplementsExtensions
         services.AddScoped<IDestinationRepository, DestinationRepository>();
         services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<ITravelQuery, TravelQuery>();
+        services.AddScoped<IVehicleQuery, VehicleQuery>();
 
         return services;
     }

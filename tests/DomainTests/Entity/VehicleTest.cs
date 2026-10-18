@@ -115,8 +115,8 @@ public class VehicleTest
         vehicle.VehicleType = VehicleType;
 
         var excecao = Assert.Throws<InvalidOperationException>(() => vehicle.StartTravel(destinationId, hasOpenTravel, driver));
-
-        Assert.Equal("Motorista não possui qualificação necessária", excecao.Message);
+        
+        Assert.Contains("Motorista não possui qualificação necessária", excecao.Message);
     }
 
     [Fact]

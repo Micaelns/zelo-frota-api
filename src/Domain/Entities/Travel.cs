@@ -12,11 +12,11 @@ public class Travel : Base
     }
 
     public Guid VehicleId { get; private set; }
-    public Vehicle Vehicle { get; private set; }
+    public Vehicle Vehicle { get; private set; } = null!;
     public Driver? Driver { get; private set; }
     public Guid? DriverId { get; private set; }
     public Guid DestinationId { get; private set; }
-    public Destination Destination { get; private set; }
+    public Destination Destination { get; private set; } = null!;
     public int? StartedMileage { get; private set; }
     public int? FinishedMileage { get; private set; }
     public float? Autonomy { get; private set; }
