@@ -4,20 +4,20 @@ using Application.DTO.Travel;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Application.UseCases.Vehicles.EconomyVehicleRanking;
+namespace Application.UseCases.Vehicles.RankingEconomyVehicle;
 
-public class EconomyRankingHandler(ITravelQuery travelQuery, ILogger<EconomyRankingHandler> logger) : IRequestHandler<EconomyRankingQuery, Result<List<VehicleEconomyDto>>>
+public class RankingEconomyHandler(ITravelQuery travelQuery, ILogger<RankingEconomyHandler> logger) : IRequestHandler<RankingEconomyQuery, Result<List<VehicleEconomyDto>>>
 {
     private readonly ITravelQuery _travelQuery = travelQuery;
-    private readonly ILogger<EconomyRankingHandler> _logger = logger;
+    private readonly ILogger<RankingEconomyHandler> _logger = logger;
 
     public async Task<Result<List<VehicleEconomyDto>>> Handle(
-        EconomyRankingQuery command,
+        RankingEconomyQuery command,
         CancellationToken cancellationToken)
     {
         try
         {
-            var economyVehicleList = await _travelQuery.GetHankingVehicleEconomyAsync(command.Skip, command.Take);
+            var economyVehicleList = await _travelQuery.GetRankingVehicleEconomyAsync(command.OrderByDescending, command.Take);
 
             _logger.LogInformation("Listagem do ranking de veiculos mais econômicos foi finalizado com sucesso.");
             return Result<List<VehicleEconomyDto>>.Success(economyVehicleList.ToList());

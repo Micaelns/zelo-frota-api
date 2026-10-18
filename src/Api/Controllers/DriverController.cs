@@ -2,6 +2,7 @@
 using Application.UseCases.Drivers.CreateDriver;
 using Application.UseCases.Drivers.ListDriver;
 using Application.UseCases.Drivers.ShowDriver;
+using Application.UseCases.Travels.RankingTravelDriver;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -66,6 +67,23 @@ public class DriverController(IMediator mediator, ILogger<DriverController> logg
         }
 
         _logger.LogInformation("Sucesso ao encontrar motoristar.");
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("ranking")]
+    [Authorize(Policy = Permission.RankingTravelDriver)]
+    public async Task<IActionResult> RankingTravelDriver([FromRoute] RankingTravelDriverQuery query)
+    {
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Problema ao listar Ranking de motoristas. BadRequest: {@query} : {@error}", query, result.Error);
+            return BadRequest(result.Error);
+        }
+
+        _logger.LogInformation("Sucesso ao listar Ranking de motoristas.");
         return Ok(result);
     }
 }

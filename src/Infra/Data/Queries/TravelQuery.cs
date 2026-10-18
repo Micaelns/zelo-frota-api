@@ -55,7 +55,8 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
             .AsNoTracking()
             .Where(element => element.VehicleId == vehicleId)
             .OrderByDescending(element => element.Start)
-            .Select(travel => new TravelDTO{
+            .Select(travel => new TravelDTO
+            {
                 IdTravel = travel.Id,
                 VehiclePlate = travel.Vehicle.Plate,
                 VehicleId = travel.Vehicle.Id,
@@ -74,9 +75,9 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleEconomyDto>> GetHankingVehicleEconomyAsync(int skip, int take = 10)
+    public async Task<IEnumerable<VehicleEconomyDto>> GetRankingVehicleEconomyAsync(bool orderByDescending, int take = 10)
     {
-        return await _context.Travels
+        var sqlQuery = _context.Travels
                 .AsNoTracking()
                 .Where(t => t.Autonomy.HasValue)
                 .GroupBy(t => new
@@ -97,14 +98,23 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
                         (double)t.Autonomy!.Value),
 
                     TotalTravels = group.Count()
-                })
-                .OrderByDescending(x => x.AverageAutonomy)
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
+                });
+
+        if (orderByDescending)
+        {
+            sqlQuery = sqlQuery.OrderByDescending(x => x.AverageAutonomy);
+        }
+        else
+        {
+            sqlQuery = sqlQuery.OrderBy(x => x.AverageAutonomy);
+        }
+
+        return await sqlQuery
+                   .Take(take)
+                   .ToListAsync();
     }
 
-    public async Task<IEnumerable<VehicleMileageRankingDTO>> GetMileageHankingAsync(bool orderByDescending, int skip, int take = 10)
+    public async Task<IEnumerable<VehicleMileageRankingDTO>> GetRankingMileageAsync(bool orderByDescending, int take = 10)
     {
         var sqlQuery = _context.Travels
                 .AsNoTracking()
@@ -140,7 +150,48 @@ public class TravelQuery(ZeloFrotaDbContext context) : ITravelQuery
 
 
         return await sqlQuery
-                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+    }
+
+    public async Task<IEnumerable<RankingTravelDriverDTO>> GetRankingTravelDriverAsync(bool orderByDescending, int take = 10)
+    {
+        var sqlQuery = _context.Travels
+               .AsNoTracking()
+               .Where(t => t.DriverId.HasValue && t.Driver != null)
+               .GroupBy(group => new
+               {
+                   group.DriverId,
+                   group.VehicleId,
+                   group.Vehicle.Plate,
+                   VehicleType = group.Vehicle.VehicleType.Name,
+                   DriverName = group.Driver!.Name
+               })
+               .Select(group => new RankingTravelDriverDTO
+               {
+                   DriverName = group.Key.DriverName,
+                   VehicleId = group.Key.VehicleId,
+                   VehiclePlate = group.Key.Plate,
+                   VehicleType = group.Key.VehicleType,
+                   TotalMileage = group.Sum(t =>
+                        (int)t.FinishedMileage!.Value - (int)t.StartedMileage!.Value),
+                   TotalTravels = group.Count(),
+                   DateFirstTravel = group.Min(m => m.Start),
+                   DateLastTravel = group.Max(m => m.End)
+               });
+
+        if (orderByDescending)
+        {
+            sqlQuery = sqlQuery.OrderByDescending(x => x.TotalTravels);
+        }
+        else
+        {
+            sqlQuery = sqlQuery.OrderBy(x => x.TotalTravels);
+        }
+
+        var tmp = sqlQuery.Take(take).ToQueryString();
+
+        return await sqlQuery
                     .Take(take)
                     .ToListAsync();
     }
