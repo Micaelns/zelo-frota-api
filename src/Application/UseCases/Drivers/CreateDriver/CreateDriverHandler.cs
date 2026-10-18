@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.UseCases.Drivers.CreateDriver;
 
-public class CreateDriverHandler(IDriverRepository repository, ILogger<CreateDriverHandler> logger) : IRequestHandler<CreateDriverCommand, Result<Guid>>
+public class CreateDriverHandler(IDriverRepository repository, ILogger<CreateDriverHandler> logger) : IRequestHandler<CreateDriverCommand, Result<Guid?>>
 {
     private readonly IDriverRepository _repository = repository;
     private readonly ILogger<CreateDriverHandler> _logger = logger;
 
-    public async Task<Result<Guid>> Handle(
+    public async Task<Result<Guid?>> Handle(
         CreateDriverCommand command,
         CancellationToken cancellationToken)
     {
@@ -22,17 +22,17 @@ public class CreateDriverHandler(IDriverRepository repository, ILogger<CreateDri
             await _repository.AddAsync(driver);
 
             _logger.LogInformation("Motorista foi cadastrado com sucesso.");
-            return Result<Guid>.Success(driver.Id);
+            return Result<Guid?>.Success(driver.Id);
         }
         catch (ArgumentException ex)
         {
             _logger.LogError("Erro no processo de cadastrar motorista. {@command} {@error}", command, ex.Message);
-            return Result<Guid>.Failure(ex.Message,ErrorType.Validation);
+            return Result<Guid?>.Failure(ex.Message,ErrorType.Validation);
         }
         catch (Exception ex)
         {
             _logger.LogError("Erro no processo de cadastrar motorista. {@command} {@error}", command, ex.Message);
-            return Result<Guid>.Failure(ex.Message);
+            return Result<Guid?>.Failure(ex.Message, ErrorType.Internal);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Api.Helper;
 using Api.Requests.VehicleTypes;
-using Application.DTO;
 using Application.Security;
 using Application.UseCases.VehicleTypes.CreateVehicleType;
 using Application.UseCases.VehicleTypes.DeleteVehicleType;

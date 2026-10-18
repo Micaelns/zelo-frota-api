@@ -11,7 +11,7 @@ public class VehicleType : Base
     {
         if (String.IsNullOrWhiteSpace(name))
         {
-            throw new InvalidDataException("O campo Nome não podem ser vazio");
+            throw new ArgumentException("O campo Nome não podem ser vazio");
         }
         Name = name;
         RequeridLicenseCategory = requeridLicenseCategory;

@@ -32,7 +32,7 @@ public class VehicleController(IMediator mediator, ILogger<VehicleController> lo
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na listagem de veículo.  {@request} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            _logger.LogWarning("Problema na listagem de veículo.  {@query} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
             return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 

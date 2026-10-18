@@ -1,4 +1,5 @@
-﻿using Application.Security;
+﻿using Api.Helper;
+using Application.Security;
 using Application.UseCases.Drivers.CreateDriver;
 using Application.UseCases.Drivers.ListDriver;
 using Application.UseCases.Drivers.ShowDriver;
@@ -24,8 +25,8 @@ public class DriverController(IMediator mediator, ILogger<DriverController> logg
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na listagem de motoristas. BadRequest: {@request} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema na listagem de motoristas. {@query} ; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso na listagem de motoristas.");
@@ -40,12 +41,12 @@ public class DriverController(IMediator mediator, ILogger<DriverController> logg
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema na criação de motorista. {@command} {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema na criação de motorista. {@command}; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso na criação de motorista. Result: {@result}", result.Value);
-        return Created("", result.Value);
+        return Created("", result);
     }
 
     [HttpGet]
@@ -62,8 +63,8 @@ public class DriverController(IMediator mediator, ILogger<DriverController> logg
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao encontrar motorista. BadRequest: {@query} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao encontrar motorista. {@query}; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao encontrar motoristar.");
@@ -79,8 +80,8 @@ public class DriverController(IMediator mediator, ILogger<DriverController> logg
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema ao listar Ranking de motoristas. BadRequest: {@query} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema ao listar Ranking de motoristas. {@query}; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso ao listar Ranking de motoristas.");

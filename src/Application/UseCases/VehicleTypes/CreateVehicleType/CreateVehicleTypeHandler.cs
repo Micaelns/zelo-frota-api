@@ -24,7 +24,7 @@ public class CreateVehicleTypeHandler(IVehicleTypeRepository vehicleTypeReposito
             _logger.LogInformation("Tipo de veículo foi cadastrado com sucesso.");
             return Result<Guid?>.Success(vehicleType.Id);
         }
-        catch (InvalidDataException ex)
+        catch (ArgumentException ex)
         {
             _logger.LogError("Erro no processo de cadastra tipo de Veiculo. {@command} {@error}", command, ex.Message);
             return Result<Guid?>.Failure(ex.Message,ErrorType.Validation);
