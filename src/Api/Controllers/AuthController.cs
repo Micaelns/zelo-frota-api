@@ -1,9 +1,11 @@
-﻿using Application.UseCases.Auth.Logon;
+﻿using Api.Helper;
+using Application.UseCases.Auth.Logon;
 using Application.UseCases.Auth.Logout;
 using Application.UseCases.Auth.RefreshToken;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Api.Controllers;
 
@@ -23,8 +25,8 @@ public class AuthController(IMediator mediator, ILogger<AuthController> logger) 
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema no logon. BadRequest: {@request} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema no logon. {@query}; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso no logon.");
@@ -39,8 +41,8 @@ public class AuthController(IMediator mediator, ILogger<AuthController> logger) 
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema no logout. BadRequest: {@request} : {@error}", query, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema no logout. {@request}; {@errorType} : {@error}", query, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso no logout.");
@@ -55,8 +57,8 @@ public class AuthController(IMediator mediator, ILogger<AuthController> logger) 
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Problema no refreshToken. BadRequest: {@command} : {@error}", command, result.Error);
-            return BadRequest(result.Error);
+            _logger.LogWarning("Problema no refreshToken. {@command}; {@errorType} : {@error}", command, result.ErrorType, result.Error);
+            return StatusCode(DecodeHelper.ErrorTypeToStatusCode(result.ErrorType), result);
         }
 
         _logger.LogInformation("Sucesso no refreshToken.");
