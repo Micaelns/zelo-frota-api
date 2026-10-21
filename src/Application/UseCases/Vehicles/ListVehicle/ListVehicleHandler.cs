@@ -21,11 +21,6 @@ public class ListVehicleHandler(IVehicleQuery vehicleQuery, ILogger<ListVehicleH
             var (vehicleList, totalItems) = await _vehicleQuery.AllAsync(pagination.CurrentPage, pagination.PerPage);
             pagination.TotalItems = totalItems;
 
-            if (vehicleList.Count() == 0)
-            {
-                _logger.LogInformation("Listagem de viagens não contem dados.");
-                return Result<List<VehicleDTO>>.Failure("Página não contem dados",ErrorType.NotFound);
-            }
             _logger.LogInformation("Listagem de viagens foi finalizado com sucesso.");
             return Result<List<VehicleDTO>>.Success(vehicleList.ToList(), pagination);
         }

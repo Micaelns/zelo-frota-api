@@ -20,7 +20,7 @@ public class Pagination
 
     public Pagination(int page, int perPage) 
     {
-        CurrentPage = Math.Max(0, page);
+        CurrentPage = Math.Max(1, page);
         PerPage = Math.Clamp(perPage, 1, 100);
     }
 }

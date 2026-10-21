@@ -17,6 +17,13 @@ public class DeleteVehicleTypeHandler(IVehicleTypeRepository vehicleTypeReposito
     {
         try
         {
+            var vehicleType = await _repository.FindAsync(command.Id);
+            if (vehicleType is null)
+            {
+                _logger.LogError("Tipo de veículo {@id} não existe", command.Id);
+                return Result<VehicleType>.Failure("Tipo de veículo não existe", ErrorType.NotFound);
+            }
+
             await _repository.DeleteLogicalAsync(command.Id);
 
             _logger.LogInformation("Tipo de veículo foi deletado com sucesso.");

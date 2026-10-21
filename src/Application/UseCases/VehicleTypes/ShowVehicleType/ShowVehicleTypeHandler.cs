@@ -21,7 +21,7 @@ public class ShowVehicleTypeHandler(IVehicleTypeRepository repository, ILogger<S
             if (vehicleType is null)
             {
                 _logger.LogError("Tipo de veículo {@id} não existe", query.Id);
-                return Result<VehicleType>.Failure("Tipo de veículo não existe", ErrorType.Validation);
+                return Result<VehicleType>.Failure("Tipo de veículo não existe", ErrorType.NotFound);
             }
             _logger.LogInformation("Retornado de tipo de veículo com sucesso.");
             return Result<VehicleType>.Success(vehicleType);

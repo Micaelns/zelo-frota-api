@@ -20,12 +20,6 @@ public class ListDriverHandler(IDriverRepository driverRepository, ILogger<ListD
             var (driverList, totalItems) = await _driverRepository.AllAsync(pagination.CurrentPage, pagination.PerPage);
             pagination.TotalItems = totalItems;
 
-            if (driverList.Count() == 0)
-            {
-                _logger.LogInformation("Listagem de motorista não contem dados.");
-                return Result<List<Driver>>.Failure("Página não contem dados", ErrorType.NotFound);
-            }
-
             _logger.LogInformation("Sucesso na listagem dos motoristas. {@query}", query);
             return Result<List<Driver>>.Success(driverList.ToList(), pagination);
         }

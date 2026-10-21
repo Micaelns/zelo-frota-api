@@ -27,13 +27,7 @@ public class ListTravelHandler(ITravelQuery travelQuery, IVehicleRepository vehi
             }
             var pagination = new Pagination(query.Page, query.Take);
             var (vehicleTravelList, totalItems) = await _travelQuery.GetTravelsByVehicleAsync(query.VehicleId, query.Page, query.Take);
-            pagination.TotalItems = totalItems;
-
-            if (vehicleTravelList.Count() == 0)
-            {
-                _logger.LogInformation("Listagem de viagens de veículo não contem dados.");
-                return Result<List<TravelDTO>>.Failure("Página não contem dados", ErrorType.NotFound);
-            } 
+            pagination.TotalItems = totalItems; 
 
             _logger.LogInformation("Lista de viagens do veículo {@Plate} foi finalizada com sucesso.", vehicle.Plate);
             return Result<List<TravelDTO>>.Success(vehicleTravelList.ToList(), pagination);

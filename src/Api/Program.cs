@@ -35,24 +35,29 @@ builder.Services.Configure<CacheSettings>(
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddOpenTelemetry(builder.Configuration);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddOpenTelemetry(builder.Configuration);
+}
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 
 builder.Services.AddContexts(builder.Configuration["connectionStringSqlServer"]);
 
 builder.Services.ImplementsRepository();
 builder.Services.ImplementsServices();
 builder.Services.RegisterMediatRUseCases(builder.Configuration["MediatRLicenseKey"]);
-builder.Services.RegistryAuthenticRefit(builder.Configuration);
-builder.Services.AddInfrastructureJWT(builder.Configuration);
-builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
-builder.Services.RegisterMongoCache(builder.Configuration);
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.RegistryAuthenticRefit(builder.Configuration);
+    builder.Services.AddInfrastructureJWT(builder.Configuration);
+    builder.Services.AddAuthorization();
+    builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+    builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+    builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
+    builder.Services.RegisterMongoCache(builder.Configuration);
+}
 builder.Services.RegisterSwagger();
 
 builder.Services.AddControllers(options =>
@@ -134,3 +139,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

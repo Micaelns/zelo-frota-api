@@ -20,12 +20,6 @@ public class ListDestinationHandler(IDestinationRepository repository, ILogger<L
             var (DestinationList, totalItems) = await _repository.AllAsync(pagination.CurrentPage, pagination.PerPage);
             pagination.TotalItems = totalItems;
 
-            if (DestinationList.Count() == 0)
-            {
-                _logger.LogInformation("Listagem de tipos de veículo não contem dados.");
-                return Result<List<Destination>>.Failure("Página não contem dados", ErrorType.NotFound);
-            }
-
             _logger.LogInformation("Sucesso na listagem dos destinos. {@query}", query);
 
             return Result<List<Destination>>.Success(DestinationList.ToList(), pagination);

@@ -21,12 +21,6 @@ public class ListVehicleTypeHandler(IVehicleTypeRepository repository, ILogger<L
             var (vehicleTypeList, totalItems) = await _repository.AllAsync(pagination.CurrentPage, pagination.PerPage);
             pagination.TotalItems = totalItems;
 
-            if (vehicleTypeList.Count() == 0)
-            {
-                _logger.LogInformation("Listagem de tipos de veículo não contem dados.");
-                return Result<List<VehicleType>>.Failure("Página não contem dados", ErrorType.NotFound);
-            }
-
             _logger.LogInformation("Listagem de tipos de veículo com sucesso.");
             return Result<List<VehicleType>>.Success(vehicleTypeList.ToList(), pagination);
         }
