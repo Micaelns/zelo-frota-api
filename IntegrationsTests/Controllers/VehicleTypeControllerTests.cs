@@ -1,5 +1,4 @@
 ﻿using Application.UseCases.VehicleTypes.CreateVehicleType;
-using Confluent.Kafka;
 using Domain.Entities;
 using Domain.Enum;
 using Infra.Data.Contexts;

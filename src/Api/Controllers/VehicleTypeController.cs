@@ -20,8 +20,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
     private readonly ILogger<VehicleTypeController> _logger = logger;
 
     [HttpGet]
-    [AllowAnonymous]
-    //[Authorize(Policy = Permission.ListVehicleType)]
+    [Authorize(Policy = Permission.ListVehicleType)]
     public async Task<IActionResult> Index([FromQuery] ListVehicleTypeQuery query)
     {
         var result = await _mediator.Send(query);
@@ -38,8 +37,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
     [HttpGet]
     [Route("{id}")]
-    [AllowAnonymous]
-    //[Authorize(Policy = Permission.FindVehicleType)]
+    [Authorize(Policy = Permission.FindVehicleType)]
     public async Task<IActionResult> Show([FromRoute] Guid id)
     {
         var query = new ShowVehicleTypeQuery() { Id = id };
@@ -56,8 +54,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
     }
 
     [HttpPost]
-    [AllowAnonymous]
-    //[Authorize(Policy = Permission.CreateVehicleType)]
+    [Authorize(Policy = Permission.CreateVehicleType)]
     public async Task<IActionResult> Create(CreateVehicleTypeCommand command)
     {
         var result = await _mediator.Send(command);
@@ -75,8 +72,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
     [HttpPut]
     [Route("{id}")]
-    [AllowAnonymous]
-    //[Authorize(Policy = Permission.UpdateVehicleType)]
+    [Authorize(Policy = Permission.UpdateVehicleType)]
     public async Task<IActionResult> Update([FromRoute] Guid id, VehicleTypeRequest request)
     {
         var command = new UpdateVehicleTypeCommand()
@@ -101,8 +97,7 @@ public class VehicleTypeController(IMediator mediator, ILogger<VehicleTypeContro
 
     [HttpDelete]
     [Route("{id}")]
-    [AllowAnonymous]
-    //[Authorize(Policy = Permission.DeleteVehicleType)]
+    [Authorize(Policy = Permission.DeleteVehicleType)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         var command = new DeleteVehicleTypeCommand() { Id = id };
