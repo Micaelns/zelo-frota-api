@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.UseCases.Destinations.CreateDestination;
+using Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -60,5 +61,33 @@ public class DestinationControllerTests(ApiFactory factory) : IClassFixture<ApiF
         Assert.NotNull(result?.Pagination);
         Assert.Equal(result?.Pagination.CurrentPage, 1);
         Assert.Equal(result?.Pagination.PerPage, 10);
+    }
+
+    [Fact]
+    public async Task Create_ValidParams_returnResultOk()
+    {
+        AddTokenInHttpClient(1);
+        var DestinationCommand = new CreateDestinationCommand { City = "São Paulo", Uf = "SP",ZipCode = "97256012" };
+        var response = await _client.PostAsJsonAsync("api/Destination", DestinationCommand);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<Guid?>>();
+
+        Assert.True(result?.IsSuccess);
+        Assert.NotNull(result?.Value);
+        Assert.Null(result?.ErrorType);
+    }
+
+    [Fact]
+    public async Task Create_withInvalidParams_returnErrorValidation()
+    {
+        AddTokenInHttpClient(1);
+        var DestinationCommand = new CreateDestinationCommand { City = "São Paulo", Uf = "AA", ZipCode = "97256012" };
+        var response = await _client.PostAsJsonAsync("api/Destination", DestinationCommand);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<Guid?>>();
+
+        Assert.False(result?.IsSuccess);
+        Assert.NotNull(result?.Error);
+        Assert.Equal(result?.ErrorType, Application.DTO.ErrorType.Validation);
     }
 }
