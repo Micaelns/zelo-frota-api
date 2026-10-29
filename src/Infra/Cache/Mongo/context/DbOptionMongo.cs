@@ -2,6 +2,7 @@
 
 public class DbOptionMongo
 {
-    public string DatabaseName { get; set; } = string.Empty;
     public string ConnectionString { get; set; } = string.Empty;
+    public string DatabaseName { get; set; } = string.Empty;
+    public int ServerSelectionTimeoutSeconds { get; set; }
 }

@@ -25,7 +25,13 @@ public static class RegisterCacheExtension
         var settings = mongoSection.Get<DbOptionMongo>() ?? new DbOptionMongo();
 
         services.Configure<DbOptionMongo>(mongoSection);
-        services.AddSingleton<IMongoClient>(_ => new MongoClient(settings.ConnectionString));
+        services.AddSingleton<IMongoClient>(_ =>
+        {
+            var clientSettings = MongoClientSettings.FromConnectionString(settings.ConnectionString);
+            clientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(settings.ServerSelectionTimeoutSeconds);
+
+            return new MongoClient(clientSettings);
+        });
 
         return services;
     }

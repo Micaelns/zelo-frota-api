@@ -16,9 +16,8 @@ public class RoleMongoCache(AuthorizationMongoContext context, ILogger<RoleMongo
 
     public async Task<IReadOnlyCollection<RoleDTO>> GetAsync(CancellationToken cancellationToken = default)
     {
-        if (!_cacheConfig.Enabled || _cacheConfig.Provider != "Mongo")
+        if (!IsActiveMongo())
         {
-            WriteLogger();
             return [];
         }
 
@@ -32,12 +31,11 @@ public class RoleMongoCache(AuthorizationMongoContext context, ILogger<RoleMongo
         return document.Roles;
 
     }
-    
+
     public async Task SetAsync(IReadOnlyCollection<RoleDTO> roles, TimeSpan expiration, CancellationToken cancellationToken = default)
     {
-        if (!_cacheConfig.Enabled || _cacheConfig.Provider != "Mongo")
+        if (!IsActiveMongo())
         {
-            WriteLogger();
             return;
         }
 
@@ -58,17 +56,21 @@ public class RoleMongoCache(AuthorizationMongoContext context, ILogger<RoleMongo
             cancellationToken);
     }
 
-    private void WriteLogger()
+    private bool IsActiveMongo()
     {
         if (!_cacheConfig.Enabled)
         {
             _logger.LogWarning("Cache temporariamente inativo.");
-            return;
+            return false;
         }
+
         if (_cacheConfig.Provider != "Mongo")
         {
             _logger.LogError("Implementação incorreta do Cache com Mongo. Cache previsto seria {@Provider}", _cacheConfig.Provider);
+            return false;
         }
+
+        return true;
     }
 
 }
