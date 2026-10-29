@@ -4,7 +4,9 @@ using Domain.Entities;
 using Domain.Enum;
 using Infra.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace IntegrationsTests.Controllers;
@@ -26,6 +28,14 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
         _client.Dispose();
     }
 
+    private void AddTokenInHttpClient(int userId, HttpClient? client = null)
+    {
+        var configuration = _factory.Services.GetRequiredService<IConfiguration>();
+        var token = TestTokenGenerator.Execute(configuration, userId);
+        var httpClient = client ?? _client;
+        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    }
+
     [Fact(DisplayName = "Index_DefautParams_returnResultOk[Ambiente isolado]")]
     public async Task Index_DefautParams_returnResultOk()
     {
@@ -34,10 +44,11 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
 
         using var client = factory.CreateClient();
 
+        AddTokenInHttpClient(1, client);
+
         var response = await client.GetAsync("api/VehicleType");
 
         Assert.True(response.IsSuccessStatusCode);
-
     }
 
     [Fact(DisplayName = "Index_validParamsPaginate_returnPaginateData[Ambiente isolado]")]
@@ -49,6 +60,7 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
         await SeedVehicleTypesAsync(factory, maxRange);
 
         using var client = factory.CreateClient();
+        AddTokenInHttpClient(1, client);
 
         var response = await client.GetAsync("api/VehicleType?page=2&take=7");
         var content = await response.Content.ReadAsStringAsync();
@@ -69,9 +81,9 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [InlineData(0, 200)]
     public async Task Index_pageNegaiveOrZero_returnPaginateDataPage1AndPerPage1OR100(int page, int perPage)
     {
+        AddTokenInHttpClient(1);
         var response = await _client.GetAsync("api/VehicleType?page=" + page + "&take=" + perPage);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<List<VehicleType>>>();
 
         Assert.NotNull(result?.Pagination);
@@ -82,10 +94,10 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Show_ValidParams_returnElement()
     {
+        AddTokenInHttpClient(1);
         var vehicleType = await CreateVehicleTypesAsync();
         var response = await _client.GetAsync("api/VehicleType/"+vehicleType.Id);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<VehicleType>>();
 
         Assert.True(result?.IsSuccess);
@@ -96,10 +108,10 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Show_InvalidParams_returnBadRequest()
     {
+        AddTokenInHttpClient(1);
         var vehicleTypeId = Guid.NewGuid();
         var response = await _client.GetAsync("api/VehicleType/" + vehicleTypeId);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<VehicleType>>();
 
         Assert.False(result?.IsSuccess);
@@ -110,10 +122,10 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Create_ValidParams_returnStatusCreated()
     {
+        AddTokenInHttpClient(1);
         var vehicleType = new CreateVehicleTypeCommand { Name = "Created-VehicleType", RequeridLicenseCategory = LicenseCategory.AB };
         var response = await _client.PostAsJsonAsync("api/VehicleType", vehicleType);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<Guid?>>();
 
         Assert.True(result?.IsSuccess);
@@ -124,10 +136,10 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Create_InvalidParams_returnBadRequest()
     {
+        AddTokenInHttpClient(1);
         var vehicleType = new CreateVehicleTypeCommand();
         var response = await _client.PostAsJsonAsync("api/VehicleType", vehicleType);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<Guid?>>();
 
         Assert.False(result?.IsSuccess);
@@ -138,6 +150,7 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Update_ValidParams_returnOK()
     {
+        AddTokenInHttpClient(1);
         var vehicleTypeLocal = await CreateVehicleTypesAsync();
         var vehicleType = new CreateVehicleTypeCommand { Name = "Updated-VehicleType", RequeridLicenseCategory = LicenseCategory.AE };
         var response = await _client.PutAsJsonAsync("api/VehicleType/" + vehicleTypeLocal.Id, vehicleType);
@@ -148,11 +161,11 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Update_InvalidParams_returnBadRequest()
     {
+        AddTokenInHttpClient(1);
         var vehicleTypeId = Guid.NewGuid();
         var vehicleType = new CreateVehicleTypeCommand();
         var response = await _client.PutAsJsonAsync("api/VehicleType/"+ vehicleTypeId, vehicleType);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<Guid?>>();
 
         Assert.False(result?.IsSuccess);
@@ -163,6 +176,7 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Delete_ValidParams_returnOK()
     {
+        AddTokenInHttpClient(1);
         var vehicleTypeLocal = await CreateVehicleTypesAsync();
         var response = await _client.DeleteAsync("api/VehicleType/" + vehicleTypeLocal.Id);
 
@@ -172,10 +186,10 @@ public class VehicleTypeControllerTests(ApiFactory factory) : IClassFixture<ApiF
     [Fact]
     public async Task Delete_InvalidParams_returnOK()
     {
+        AddTokenInHttpClient(1);
         var vehicleTypeId = Guid.NewGuid();
         var response = await _client.DeleteAsync("api/VehicleType/" + vehicleTypeId);
 
-        var content = await response.Content.ReadAsStringAsync();
         var result = await response.Content.ReadFromJsonAsync<ApiResponse<VehicleType>>();
 
         Assert.False(result?.IsSuccess);

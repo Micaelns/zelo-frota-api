@@ -1,13 +1,15 @@
-using Domain.Entities;
+using Api.Handlers;
+using Application.Contracts.Abstractions;
 using Infra.Data.Contexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Moq;
 
 namespace IntegrationsTests;
 
@@ -21,15 +23,6 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
 
-        builder.ConfigureAppConfiguration((_, configuration) =>
-        {
-            configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["Cache:Provider"] = "None"
-                });
-        });
-
         _connection.Open();
 
         builder.ConfigureServices(services =>
@@ -39,7 +32,27 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
 
             services.AddDbContext<ZeloFrotaDbContext>(
                 options => options.UseSqlite(_connection));
+
+            var permissionAuthorization = new Mock<IPermissionAuthorization>();
+
+            permissionAuthorization
+                .Setup(x => x.HasPermissionAsync(
+                    It.IsAny<int>(),
+                    It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            permissionAuthorization
+                .Setup(x => x.HasPermissionAsync(
+                    10,
+                    It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            services.RemoveAll<IPermissionAuthorization>();
+
+            services.AddSingleton<IPermissionAuthorization>(permissionAuthorization.Object);
+
         });
+
     }
 
     public async Task InitializeDatabaseAsync()
